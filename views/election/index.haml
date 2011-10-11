@@ -1,0 +1,16 @@
+%h1 All elections
+- unless @open.empty?
+	%h3 Open Elections
+	%ul
+	- @open.each do |elect|
+		%li
+			= elect.name
+			%a{:href=>"/election/#{elect.id}"} vote!
+
+- unless @closed.empty?
+	%h3 Closed Elections
+	%ul
+	- @closed.each do |elect|
+		%li
+			= elect.name 
+			%a{:href=>"/election/results/#{elect.id}"} results

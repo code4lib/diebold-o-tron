@@ -1,0 +1,20 @@
+- unless @event.nil?
+	%p
+		%a{:href=>"/conferences/events/#{@event.id}"}= @event.name
+%p
+	%a{:href=>"/conferences/events/"} Events	
+
+	
+	
+
+- if session[:username]
+	%p Signed in as #{session[:username]}
+	%p
+		%a{:href=>"/logout/"} Sign out
+	%p
+		%a{:href=>"/profile/"} Profile
+	- if CONFIG["administrators"] && CONFIG["administrators"].include?(session[:username])
+		%p
+			%a{:href=>"/admin/"} Admin
+- else
+	= haml :'/common/login_form'

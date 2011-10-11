@@ -1,0 +1,92 @@
+/* 
+    Document   : conferenceKeeper
+    Created on : Dec 5, 2007, 2:11:17 PM
+    Author     : rosssinger
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+
+dt.election_item {
+    border-bottom-style: solid;
+    border-bottom-color: gray;
+    border-bottom-width: thin;
+
+    
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+dd.election_item_description {
+    display:  none;
+    background-color: #eeeeee;
+}
+.election_vote {
+    right: 1px;
+}
+.election_score {
+    display: inline;
+    vertical-align: middle;
+
+    border-bottom-style: solid;
+
+    border-right-style: solid;
+
+    border-bottom-width: 1px;
+
+    border-right-width: 1px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+table.election_results {
+    
+    width: 75%;
+
+
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: #000000;
+    border-bottom-color: #000000;
+    border-left-color: #000000;
+    border-right-color: #000000;
+}
+
+tr.election_results {
+    
+    width: 75%;
+
+
+    border-bottom-style: solid;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: #000000;
+    border-bottom-color: #000000;
+    border-left-color: #000000;
+    border-right-color: #000000;
+}
+
+td.election_results_score {
+    text-align:  center;
+    font-weight: bold;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: #000000;
+}

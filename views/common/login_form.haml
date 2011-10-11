@@ -1,0 +1,12 @@
+-if @message
+	.login_message= @message
+.login_form
+	%form{:action=>"/login/", :method=>"POST"}
+		.login_form_label username
+		.login_form_element
+			%input.login_form_element{:type=>"text", :name=>"username"}
+		.login_form_label password
+		.login_form_element
+			%input.login_form_element{:type=>"password", :name=>"password"}			
+		%input{:type=>"hidden", :name=>"return", :value=>request.fullpath}
+		%input{:type=>"submit", :value=>"Log in!"}

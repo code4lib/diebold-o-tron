@@ -1,0 +1,11 @@
+%table
+	%tr
+		%th Username
+		%th Name
+		%th Email
+	- @people.each do |person|
+		%tr
+			%td
+				%a{:href=>"/admin/person/edit?id=#{person.id}"}= person.username||"username missing"
+			%td #{person.last_name}, #{person.first_name}
+			%td #{person.email}

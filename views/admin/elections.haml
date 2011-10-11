@@ -1,0 +1,6 @@
+%h2 Choose an election
+%ul
+	- @elections.each do |elect|
+		%li 
+			%a{:href=>"/admin/election/edit/?id=#{elect.id}"}= elect.name
+

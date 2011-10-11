@@ -1,0 +1,11 @@
+- conference = nil
+- @events.each do |event|
+	- unless event.conference == conference
+		%h1= event.conference.name
+		- conference = event.conference
+		%div Events:
+	%div
+		%ul
+			%li
+				%a{:href=>"/admin/event/edit/?id=#{event.id}"}= event.name
+				= ": #{event.location}"

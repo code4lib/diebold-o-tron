@@ -1,0 +1,20 @@
+%html
+	%head
+		%link{:rel=>"stylesheet", :href=>"http://yui.yahooapis.com/2.4.0/build/reset-fonts-grids/reset-fonts-grids.css", :type=>"text/css"}
+		%link{:rel=>"stylesheet", :href=>"/css/diebold.css", :type=>"text/css"}
+		%script{:type => "text/javascript", :src => '/js/diebold.js'}
+		%title #{@page_title} @ Code4Lib
+
+	%body
+		#doc3{:class=>"yui-t1"}
+			#hd
+				- if @event
+					%h2	#{@event.name}:  #{@event.location}
+		
+			#bd
+				%div{:id=>"yui-main"}
+					%div{:class=>"yui-b"}
+						%div{:class=>"yui-g"}
+							= yield
+				%div{:class=>"yui-b"}
+					= haml :"/common/left_nav"

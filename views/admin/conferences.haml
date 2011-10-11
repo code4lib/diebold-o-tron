@@ -1,0 +1,6 @@
+%h1 Conferences:
+%ul
+	- @conferences.each do |c|
+		%li
+			%a{:href=>"/admin/conference/edit/?id=#{c.id}"}= c.name
+	

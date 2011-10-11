@@ -1,0 +1,27 @@
+%form{:action=>"/admin/set_event", :method=>"POST"}
+	%select{:name=>"event_id"}
+		- Event.find(:all, :order=>"id DESC").each do |event|
+			- if event.id == session[:event_id]
+				%option{:value=>event.id, :selected=>true}= "#{event.name}: #{event.location}"
+			- else
+				%option{:value=>event.id}= "#{event.name}: #{event.location}"
+	%input{:type=>"submit", :value=>"Set event"}
+	
+%ul
+	- ["Conference", "Event", "Person"].each do |item|
+		%li
+			= "#{item}:  "
+			%a{:href=>"/admin/#{item.downcase}/edit/"} add
+			%a{:href=>"/admin/#{item.downcase}/"} edit	
+- if session[:event_id]
+	%ul
+		- ["Election"].each do |item|
+			%li
+				= "#{item}:  "
+				%a{:href=>"/admin/#{item.downcase}/edit/"} add
+				%a{:href=>"/admin/#{item.downcase}/"} edit
+		- ["Presentation", "Location", "Keynote", "T-Shirt"].each do |proposal|
+			%li
+				= "#{proposal} Proposal:  "
+				%a{:href=>"/admin/proposals/edit/?type=#{proposal.gsub(/[^\w]/,"")}"} add
+				%a{:href=>"/admin/proposals/?type=#{proposal.gsub(/[^\w]/,"")}"} edit

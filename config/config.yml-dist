@@ -1,0 +1,11 @@
+database:
+  adapter: mysql
+  database: confkeeper
+  username: 
+  password: 
+
+Drupal:
+  host: http://example.org/
+  
+administrators:
+    - user_account_name

@@ -1,0 +1,26 @@
+%h1 Edit Event:
+
+%form{:action=>"/admin/event/edit/", :method=>"POST"}
+	- if @event.id
+		%input{:type=>"hidden", :name=>"id", :value=>@event.id}
+	%table
+		%tr
+			%td Conference:
+			%td
+				%select{:name=>"conference_id"}
+					- Conference.find(:all, :order=>"id").each do |c|
+						%option{:value=>c.id}= c.name
+		%tr
+			%td Name:
+			%td
+				%input{:type=>"text", :name=>"name", :value=>@event.name}
+		%tr
+			%td Location:
+			%td
+				%input{:type=>"text", :name=>"location", :value=>@event.location}				
+		%tr
+			%td{:colspan=>"2"} Description:
+		%tr
+			%td{:colspan=>"2"}
+				%textarea{:name=>"description"}= @event.description
+	%input{:type=>"submit", :value=>"Save"}

@@ -1,0 +1,12 @@
+%h1 #{@election.name} results
+%table{:class=>"election_results"}
+	%tr{:class=>"election_results"}
+		%th score
+		%th candidates
+		- @scores.sort.reverse.each do |score|
+			%tr{:class=>"election_results"}
+			%td{:class=>"election_results_score"}= score
+			%td
+				- @results[score.to_s].each do |item|
+					= item.name
+					%br
