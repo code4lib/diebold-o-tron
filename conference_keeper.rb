@@ -1,4 +1,6 @@
+$KCODE = 'u'
 require 'rubygems'
+require 'jcode'
 require 'sinatra'
 require 'active_record'
 require 'yaml'
@@ -216,6 +218,44 @@ get "/admin/election/" do
   check_admin
   @elections = Election.find_all_by_event_id(session[:event_id], :order=>"id")
   haml :"admin/elections", {:layout => :"common/layout"}    
+end
+
+get "/admin/proposals/" do
+  check_admin
+  @proposals = Item.find_all_by_event_id_and_type(session[:event_id], params[:type], :order=>"id")
+  begin
+    haml :"admin/proposals/#{params[:type].downcase}", {:layout => :"common/layout"}      
+  rescue Errno::ENOENT
+    haml :"admin/proposals", {:layout => :"common/layout"}    
+  end
+  
+end
+
+get "/admin/proposals/edit/" do
+  check_admin
+  if params[:id]
+    @proposal = Item.find(params[:id])
+  else
+    @proposal = Kernel.const_get(params[:type]).new
+  end
+  begin
+    haml :"admin/proposals/edit_#{params[:type].downcase}", {:layout => :"common/layout"}
+  rescue Errno::ENOENT
+    haml :"admin/edit_proposal", {:layout => :"common/layout"}    
+  end    
+end
+
+post "/admin/proposals/edit/" do
+  check_admin
+  params[:event_id] = session[:event_id]
+  if params[:id]
+    proposal = Item.find(params[:id])
+    proposal.update_attributes(params)
+  else
+    proposal = Kernel.const_get(params[:type]).create(params)
+  end
+  session[:message] = "#{proposal.name} saved!"
+  redirect "/admin/updated/" 
 end
 
 get "/admin/election/edit/" do

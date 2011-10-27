@@ -1,10 +1,7 @@
 %form{:action=>"/admin/set_event", :method=>"POST"}
 	%select{:name=>"event_id"}
 		- Event.find(:all, :order=>"id DESC").each do |event|
-			- if event.id == session[:event_id]
-				%option{:value=>event.id, :selected=>true}= "#{event.name}: #{event.location}"
-			- else
-				%option{:value=>event.id}= "#{event.name}: #{event.location}"
+			%option{:value=>event.id, :selected=>event.id.to_s == session[:event_id]}= "#{event.name}: #{event.location}"
 	%input{:type=>"submit", :value=>"Set event"}
 	
 %ul

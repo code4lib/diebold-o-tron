@@ -1,0 +1,4 @@
+%ul
+	- @proposals.each do |prop|
+		%li
+			%a{:href=>"/admin/proposals/edit/?id=#{prop.id}&type=#{prop.type}"}= prop.name

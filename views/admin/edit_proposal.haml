@@ -1,0 +1,20 @@
+%form{:action=>"/admin/proposals/edit/", :method=>"POST"}
+	- if @proposal.id 
+		%input{:type=>"hidden", :name=>"id", :value=>@proposal.id}
+	%input{:type=>"hidden", :name=>"type", :value=>@proposal.type}	
+	%table
+		%tr
+			%td ID:
+			%td= (@proposal.id|| "new")
+		%tr
+			%td Name:
+			%td
+				%input{:type=>"text", :name=>"name", :value=>@proposal.name}
+		%tr
+			%td{:colspan=>"2"} Description
+			%tr
+				%td{:colspan=>"2"}
+					%textarea{:name=>"description"}= @proposal.description
+			%tr
+				%td{:colspan=>"2"}
+					%input{:type=>"submit", :value=>"Save"}

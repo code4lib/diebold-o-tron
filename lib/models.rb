@@ -58,9 +58,9 @@ class Item < ActiveRecord::Base
   end
 end
 
-class KeynoteProposal < Item;end
+class Keynote < Item;end
 
-class LocationProposal < Item;end
+class Location < Item;end
 
 class Participant < ActiveRecord::Base
   belongs_to :person
@@ -105,7 +105,7 @@ end
 
 class RatingElection < Election;end
 
-class TShirtProposal < Item;end
+class TShirt < Item;end
 
 class Vote < ActiveRecord::Base
   belongs_to :election
