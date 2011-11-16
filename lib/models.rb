@@ -17,7 +17,7 @@ class Election < ActiveRecord::Base
 
   def open?
     right_now = Time.now
-    return true if right_now >= self.start_time && right_now <= self.end_time
+    return true if (self.start_time && right_now >= self.start_time) && (self.end_time && right_now <= self.end_time)
     return false
   end
 end

@@ -1,0 +1,15 @@
+%dt.election_item
+	- if @election.open? && session[:username]
+		= display_election_item(item, @user, @election)
+	%strong
+		%a{:onClick=>"show_hide('election_item_description_#{item.id}')"}= item.name
+	%dd.election_item_description{:id=>[:election_item_description, item.id]}
+		- presenters = []
+		- item.presenters.each {|person| presenters << person.full_display.to_s}
+		%p
+			%strong Abstract:
+			= item.description
+		- unless presenters.empty?
+			%p
+				%strong Presenters:
+				= presenters.join("; ")

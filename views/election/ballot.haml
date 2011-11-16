@@ -1,0 +1,13 @@
+%h1 Election: #{@election.name}/#{@election.event.name}
+- if @election.open?
+	= haml :"election/#{@election.class.to_s.downcase}_explanation"
+	- if session[:username]
+		%form{:action=>"/election/#{@election.id}", :method=>"POST"}
+			%input{:type=>"submit", :value=>"Cast your ballot"}
+			%dl
+				- @items.each do |item|
+					= haml(:"election/#{item.class.to_s.downcase}_item", :locals=>{:item=>item})
+			%input{:type=>"submit", :value=>"Cast your ballot"}
+- else
+	%p This election is currently closed.  Voting times are between:
+	%p #{@election.start_time} and #{@election.end_time}

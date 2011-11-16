@@ -2,6 +2,7 @@ $KCODE = 'u'
 require 'rubygems'
 require 'jcode'
 require 'sinatra'
+require 'haml'
 require 'active_record'
 require 'yaml'
 require 'rack/conneg'
@@ -58,10 +59,42 @@ get "/election/:id" do
   @items = @election.event.items.find(:all, :conditions=>@election.conditions, :order=>"name")  
 
   if @election.open?
-    haml :"election/ballot"
+    haml :"election/ballot", {:layout => :"common/layout"}  
   else
     haml :"election/closed"
   end
+end
+
+post "/election/:id" do
+  @election = Election.find(params[:id])
+  @page_title = "Ballot error:  #{@election.name}"
+  unless person = Person.find_by_username(session[:username])      
+    flash[:notice] = "You are not signed in properly!"
+    render :template=>'voting_error'
+    return
+  end
+    
+  unless @election.open?
+    flash[:notice] = "This election is not currently open, sorry."
+    redirect_to :template=>'voting_error'
+    return      
+  end
+  @page_title = "Ballot submitted:  #{@election.name}"
+  params[:item].each do | item_id, score |
+    
+    vote = Vote.find_or_create_by_item_id_and_election_id_and_person_id(item_id.to_i, @election.id, person.id)
+    next if score == "0" and vote.new_record?
+    if score == "0" and !vote.new_record?
+      Vote.delete(vote.id)
+      next
+    end
+    vote.item = Item.find(item_id)
+    vote.person = person
+    vote.election = @election
+    vote.score = score.to_i
+    vote.save
+  end
+  haml :"election/ballot_submitted", {:layout => :"common/layout"}  
 end
 
 get "/election/results/:id" do
@@ -277,11 +310,13 @@ post "/admin/election/edit/" do
     election.start_time = DateTime.parse(params[:start_time])
     election.end_time = DateTime.parse(params[:end_time])    
     election.event_id = session[:event_id]
-    election.conditions = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"
+    election.conditions = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"    
     election.save
   else
-    params[:conditions] = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"
-    params.delete(:election_type)
+    params["type"] = params[:election_type]
+    params["event_id"] = session[:event_id]
+    params.delete("election_type")
+    params["conditions"] = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"
     election = Election.create(params)
   end
   session[:message] = "#{election.name} saved!"
@@ -299,4 +334,14 @@ helpers do
     return if CONFIG['administrators'] && CONFIG['administrators'].include?(session[:username])
     halt 401, "Unauthorized"
   end
+  def display_election_item(item, user, election)
+    return display_rating(item, user, election) if election.is_a?(RatingElection)
+  end
+  
+  def display_rating(item, user, election)
+    vote = Vote.find_by_item_id_and_person_id_and_election_id(item.id, user.id, election.id)
+    selected = 0
+    selected = vote.score if vote
+    haml :"election/rating_item", :locals=>{:item_id=>item.id, :selected=>selected}
+  end  
 end

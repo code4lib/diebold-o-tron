@@ -1,0 +1,6 @@
+%span.election_vote
+	- (0..3).each do |score|
+		- checked = ((selected == score) ? true : false)
+		.election_score
+			= score
+			%input{:type=>"radio", :name=>"item[#{item_id}]", :value=>score, :checked=>checked}

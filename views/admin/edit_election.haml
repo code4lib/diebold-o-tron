@@ -11,17 +11,17 @@
 			%td
 				%select{:name=>"election_type"}
 					- Item.find_by_sql(["SELECT DISTINCT(type) FROM items"]).each do |t|
-						- if t.type == @election.type
+						- if @election.conditions =~ /type = '#{t.class}'/
 							%option{:selected=>true}= t.type
 						- else
 							%option= t.type
 		%tr
 			%td Start timestamp:
 			%td
-				%input{:type=>"text", :name=>"start_time", :value=>(@election.start_time.to_s||DateTime.now.to_s)}
+				%input{:type=>"text", :name=>"start_time", :value=>(@election.start_time||DateTime.now).to_s}
 		%tr
 			%td End timestamp:
 			%td
-				%input{:type=>"text", :name=>"end_time", :value=>(@election.end_time.to_s||DateTime.now.to_s)}	
+				%input{:type=>"text", :name=>"end_time", :value=>(@election.end_time||DateTime.now).to_s}	
 	%input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}						
 	%input{:type=>"submit", :value=>"Save"}
