@@ -8,6 +8,7 @@ require 'yaml'
 require 'rack/conneg'
 require 'lib/models'
 require 'lib/drupal_client'
+require 'rdiscount'
 require 'json'
 
 configure do
