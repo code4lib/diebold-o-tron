@@ -1,0 +1,32 @@
+%h1 Edit profile: #{@person.username||session[:username]}
+%form{:action=>"/profile/edit", :method=>"POST"}
+	%input{:type=>"hidden", :name=>"id", :value=>@person.id}
+	%input{:type=>"hidden", :name=>"username", :value=>(@person.username||session[:username])}	
+	%table
+		%tr
+			%td First name:
+			%td
+				%input{:type=>"text", :name=>"first_name", :value=>@person.first_name}
+		%tr
+			%td Middle name:
+			%td
+				%input{:type=>"text", :name=>"middle_name", :value=>@person.middle_name}				
+		%tr
+			%td Last name:
+			%td
+				%input{:type=>"text", :name=>"last_name", :value=>@person.last_name}
+		%tr
+			%td Email:
+			%td
+				%input{:type=>"text", :name=>"email", :value=>@person.email}								
+		%tr
+			%td Organization:
+			%td
+				%input{:type=>"text", :name=>"organization", :value=>@person.organization}				
+		%tr
+			%td Title:
+			%td
+				%input{:type=>"text", :name=>"title", :value=>@person.title}				
+		%tr
+			%td{:colspan=>2}
+				%input{:type=>"submit", :value=>"Save"}

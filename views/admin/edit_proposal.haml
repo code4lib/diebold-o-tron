@@ -9,12 +9,12 @@
 		%tr
 			%td Name:
 			%td
-				%input{:type=>"text", :name=>"name", :value=>@proposal.name}
+				%input{:type=>"text", :name=>"name", :value=>@proposal.name, :size=>100}
 		%tr
 			%td{:colspan=>"2"} Description
 			%tr
 				%td{:colspan=>"2"}
-					%textarea{:name=>"description"}= @proposal.description
+					%textarea{:name=>"description", :cols=>150, :rows=>20}= @proposal.description
 			%tr
 				%td{:colspan=>"2"}
 					%input{:type=>"submit", :value=>"Save"}

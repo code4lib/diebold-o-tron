@@ -164,6 +164,17 @@ get "/logout/" do
   redirect "/"
 end
 
+get '/profile/' do  
+  @person = (Person.find_by_username(session[:username])||Person.new)
+  haml :"profile/edit", {:layout => :"common/layout"}    
+end
+
+post '/profile/edit' do  
+  person = Person.find_or_create_by_username(params[:username])
+  person.update_attributes(params)
+  person.save
+  haml :"profile/saved", {:layout => :"common/layout"}   
+end
 
 get "/login/error/" do
   @message = "Incorrect username or password"
