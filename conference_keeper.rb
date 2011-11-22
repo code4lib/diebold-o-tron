@@ -15,6 +15,7 @@ configure do
   CONFIG = YAML.load_file('config/config.yml')
   ActiveRecord::Base.establish_connection(CONFIG['database'])  
   enable :sessions  
+  set :session_secret, "wheedly-wheedly-whee!"
 end
 
 use(Rack::Conneg) { |conneg|
