@@ -10,8 +10,6 @@ class DrupalClient
   def login
     res = Net::HTTP.post_form(@uri,{'edit[name]'=>@username,
       'edit[pass]'=>@password,'edit[form_id]'=>'user_login_block'})
-    puts res.inspect
-    puts res.body
     if res.code == "302"
       return res.header["location"].split("/").last.to_i
     end

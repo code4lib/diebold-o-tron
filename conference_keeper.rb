@@ -71,15 +71,13 @@ post "/election/:id" do
   @election = Election.find(params[:id])
   @page_title = "Ballot error:  #{@election.name}"
   unless person = Person.find_by_username(session[:username])      
-    flash[:notice] = "You are not signed in properly!"
-    render :template=>'voting_error'
-    return
+    @message = "You are not signed in properly!"
+    return haml :"election/error", {:layout => :"common/layout"}  
   end
     
   unless @election.open?
-    flash[:notice] = "This election is not currently open, sorry."
-    redirect_to :template=>'voting_error'
-    return      
+    @message = "This election is not currently open, sorry."
+    return haml :"election/error", {:layout => :"common/layout"}           
   end
   @page_title = "Ballot submitted:  #{@election.name}"
   params[:item].each do | item_id, score |
@@ -149,7 +147,7 @@ post "/login/" do
   end
   session[:username] = params[:username]
   session[:drupal_id] = params[:login]
-  unless Person.find_by_username(params[:username])
+  unless Person.find_or_create_by_username(params[:username])
     redirect '/profile/edit'
     return
   end
