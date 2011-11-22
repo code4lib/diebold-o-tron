@@ -5,8 +5,8 @@
 		%th candidates
 		- @scores.sort.reverse.each do |score|
 			%tr{:class=>"election_results"}
-			%td{:class=>"election_results_score"}= score
-			%td
-				- @results[score.to_s].each do |item|
-					= item.name
-					%br
+				%td{:class=>"election_results_score"}= score
+				%td
+					- @results[score.to_s].each do |item|
+						= item.name
+						%br
