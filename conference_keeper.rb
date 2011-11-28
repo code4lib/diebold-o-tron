@@ -105,16 +105,17 @@ get "/election/results/:id" do
   @election = Election.find(params[:id])
   @page_title = "Results:  #{@election.name}"
   @results = {}
-  items = []
-  @election.votes.each do | v |
-    items << v.item unless items.index(v.item)
+  items = {}
+  Item.find_by_sql("select distinct i.* FROM items i, votes v WHERE v.election_id = #{@election.id} AND i.id = v.item_id").each do |i|
+    items[i.id] = i
   end
+
   @scores = []
   machine_readable = []
-  items.each do | i |
-    score = @election.votes.sum(:score, :conditions=>["item_id = ?", i.id]).to_s
+  @election.votes.sum(:score, :group=>:item_id).each_pair do |item_id, score|
     @scores << score.to_i unless @scores.index(score.to_i)
     @results[score] ||=[]
+    i = items[item_id]
     @results[score] << i
     machine_readable << {:id=>i.id,:title=>i.name,:description=>i.description,:score=>score.to_i}
   end

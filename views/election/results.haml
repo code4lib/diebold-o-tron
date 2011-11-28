@@ -7,6 +7,6 @@
 			%tr{:class=>"election_results"}
 				%td{:class=>"election_results_score"}= score
 				%td
-					- @results[score.to_s].each do |item|
+					- @results[score].each do |item|
 						= item.name
 						%br
