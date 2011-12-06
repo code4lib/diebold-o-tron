@@ -3,7 +3,7 @@
 		= display_election_item(item, @user, @election)  
 	%strong
 		%a{:onClick=>"show_hide('election_item_description_#{item.id}')"}= item.name
-	%dd.election_item_description{:id=>[:election_item_description, item.id]}
+	%dd
 		%p
 			%strong Proposal:
 			:markdown 
