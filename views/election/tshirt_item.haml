@@ -6,4 +6,5 @@
 	%dd.election_item_description{:id=>[:election_item_description, item.id]}
 		%p
 			%strong Proposal:
-			= item.description
+			:markdown 
+				#{item.description}
