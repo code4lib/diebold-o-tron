@@ -90,8 +90,7 @@ td.election_results_score {
     border-right-width: 1px;
     border-right-color: #000000;
 }
-.
-election_item a {
+.election_item a {
 	color: #039;
 	cursor: pointer;
 }
