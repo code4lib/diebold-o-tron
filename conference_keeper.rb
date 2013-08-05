@@ -98,6 +98,12 @@ post "/election/:id" do
 end
 
 get "/election/results/:id" do
+  unless person = Person.find_by_username(session[:username])      
+    @page_title = "Not signed in"
+    @message = "You are not signed in properly!"
+    return haml :"election/error", {:layout => :"common/layout"}  
+  end
+
   unless params[:id]
     redirect_to :action=>'list_elections'
     return    
