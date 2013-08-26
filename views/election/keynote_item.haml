@@ -1,9 +1,12 @@
-%dt.election_item
-	- if @election.open? && session[:username]
-		= display_election_item(item, @user, @election)
-	%strong
-		%a{:onClick=>"show_hide('election_item_description_#{item.id}')"}= item.name
-	%dd.election_item_description{:id=>[:election_item_description, item.id]}
-		%p
-			%strong Information:
-			= item.description
+.row-fluid.election_item{:class=>(even_row ? 'even_row' : nil)}  
+  - if @election.open? && session[:username]
+    .span3
+      = display_election_item(item, @user, @election)
+      
+  %div{:class=>set_span_size_for_live(@election.open?, session[:username])}
+    %strong
+      %a{:rel=>"tooltip", :title=>"Click name for description", :id=>[:election_item_link, item.id], :class=>'item_title'}= item.name
+.row-fluid.description.hide{:id=>[:election_item_description, item.id]}
+  .span10.well
+    %strong Information:
+    = item.description

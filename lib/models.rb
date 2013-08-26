@@ -5,15 +5,15 @@ end
 class Election < ActiveRecord::Base
   belongs_to :event
   has_many :votes
-  @@children = []
-  
-  def self.inherited(sub)
-    @@children << sub
-  end
-  
-  def self.children
-    return @@children
-  end 
+  # @@children = []
+  # 
+  # def self.inherited(sub)
+  #   @@children << sub
+  # end
+  # 
+  # def self.children
+  #   return @@children
+  # end 
 
   def open?
     right_now = Time.now
@@ -32,15 +32,15 @@ class Item < ActiveRecord::Base
   belongs_to :event
   has_many :votes
   has_many :participants, :dependent => :destroy
-  @@children = []
-  
-  def self.inherited(sub)
-    @@children << sub
-  end
-  
-  def self.children
-    return @@children
-  end
+  # @@children = []
+  # 
+  # def self.inherited(sub)
+  #   @@children << sub
+  # end
+  # 
+  # def self.children
+  #   return @@children
+  # end
   
   def has_role?(person, role)
     self.participants.each do | part |

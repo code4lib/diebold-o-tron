@@ -1,6 +1,5 @@
-%span.election_vote
-	- (0..3).each do |score|
-		- checked = ((selected == score) ? true : false)
-		.election_score
-			= score
-			%input{:type=>"radio", :name=>"item[#{item_id}]", :value=>score, :checked=>checked}
+%div{:class=>"btn-group", :"data-toggle"=>"buttons-radio"}
+  - (0..3).each do |score|
+    - checked = ((selected == score) ? 'active' : nil)
+    %button.btn.btn-inverse.rating-score{:type=>"button", :id=>"item_#{item_id}_#{score}", :value=>score, :class=>checked}= score
+  %input{:type=>'hidden', :id=>"item[#{item_id}]", :name=>"item[#{item_id}]", :value=>selected}

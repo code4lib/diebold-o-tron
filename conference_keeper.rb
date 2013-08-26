@@ -16,6 +16,7 @@ configure do
   ActiveRecord::Base.establish_connection(CONFIG['database'])  
   enable :sessions  
   set :session_secret, "wheedly-wheedly-whee!"
+  set :haml, :format => :html5
 end
 
 use(Rack::Conneg) { |conneg|
@@ -69,6 +70,7 @@ end
 
 post "/election/:id" do
   @election = Election.find(params[:id])
+  @event = @election.event 
   @page_title = "Ballot error:  #{@election.name}"
   unless person = Person.find_by_username(session[:username])      
     @message = "You are not signed in properly!"
@@ -103,6 +105,7 @@ get "/election/results/:id" do
     return    
   end
   @election = Election.find(params[:id])
+  @event = @election.event
   @page_title = "Results:  #{@election.name}"
   @results = {}
   items = {}
@@ -178,7 +181,7 @@ end
 
 get "/login/error/" do
   @message = "Incorrect username or password"
-  haml :"common/login_form", {:layout => :"common/layout-noleft"}    
+  haml :"common/login_form", {:layout => :"common/layout"}    
 end
 
 get "/admin/" do
@@ -188,8 +191,8 @@ end
 
 post "/admin/set_event" do
   check_admin
-  session[:event_id] = params[:event_id]
-  redirect "/admin/"
+  #session[:event_id] = params[:event_id]
+  redirect "/admin/event/#{params[:event_id]}"
 end
 
 get "/admin/person/" do
@@ -259,15 +262,27 @@ post "/admin/event/edit/" do
   redirect "/admin/updated/"
 end
 
-get "/admin/election/" do
+get "/admin/event/:id" do
   check_admin
-  @elections = Election.find_all_by_event_id(session[:event_id], :order=>"id")
+  begin    
+    @event = Event.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    not_found unless @event
+  end
+  @item_types = Item.all(:conditions=>{:event_id=>@event.id}, :select=>:type).map(&:type).uniq
+  haml :"admin/index", {:layout => :"common/layout"}
+end
+
+get "/admin/event/:id/election/" do
+  check_admin
+  @event = Event.find(params[:id])
+  @elections = Election.find_all_by_event_id(params[:id], :order=>"id")
   haml :"admin/elections", {:layout => :"common/layout"}    
 end
 
-get "/admin/proposals/" do
+get "/admin/event/:id/proposals/" do
   check_admin
-  @proposals = Item.find_all_by_event_id_and_type(session[:event_id], params[:type], :order=>"id")
+  @proposals = Item.find_all_by_event_id_and_type(params[:id], params[:type], :order=>"id")
   begin
     haml :"admin/proposals/#{params[:type].downcase}", {:layout => :"common/layout"}      
   rescue Errno::ENOENT
@@ -276,8 +291,9 @@ get "/admin/proposals/" do
   
 end
 
-get "/admin/proposals/edit/" do
+get "/admin/event/:event_id/proposals/edit/" do
   check_admin
+  @event = Event.find(params[:event_id])
   if params[:id]
     @proposal = Item.find(params[:id])
   else
@@ -290,21 +306,24 @@ get "/admin/proposals/edit/" do
   end    
 end
 
-post "/admin/proposals/edit/" do
+post "/admin/event/:event_id/proposals/edit/" do
   check_admin
-  params[:event_id] = session[:event_id]
   if params[:id]
-    proposal = Item.find(params[:id])
-    proposal.update_attributes(params)
+    proposal = Item.find(params[:id])    
   else
-    proposal = Kernel.const_get(params[:type]).create(params)
+    proposal = Kernel.const_get(params[:type]).new
   end
+  
+  proposal.attributes = params.reject{|k,v| !proposal.attributes.keys.member?(k.to_s) }
+  proposal.save
+  
   session[:message] = "#{proposal.name} saved!"
-  redirect "/admin/updated/" 
+  redirect "/admin/event/#{params[:event_id]}/updated/" 
 end
 
-get "/admin/election/edit/" do
+get "/admin/event/:event_id/election/edit/" do
   check_admin
+  @event = Event.find(params[:event_id])
   if params[:id]
     @election = Election.find(params[:id])
   else
@@ -313,30 +332,45 @@ get "/admin/election/edit/" do
   haml :"admin/edit_election", {:layout => :"common/layout"}
 end
 
-post "/admin/election/edit/" do
+post "/admin/event/:event_id/election/edit/" do
   check_admin
-  if params[:id]
-    election = Election.find(params[:id])
-    election.name = params[:name]
-    election.type = params[:type]
-    election.start_time = DateTime.parse(params[:start_time])
-    election.end_time = DateTime.parse(params[:end_time])    
+  args = {}
+  [:name, :event_id, :id, :type].each do |p|
+    args[p] = params[p] if params[p]
+  end
+  
+  start_time = params[:start_date]
+  start_time << "T#{params[:start_time]}" if params[:start_time]
+  args[:start_time] = DateTime.parse(start_time)
+  
+  end_time = params[:end_date]
+  end_time << "T#{params[:end_time]}" if params[:end_time]  
+  args[:end_time] = DateTime.parse(end_time)
+  
+  if args[:id]
+    election = Election.find(args[:id])
+    election.name = args[:name]
+    election.type = args[:type]
+
+    election.start_time = args[:start_time]
+    election.end_time = args[:end_time]   
     election.event_id = session[:event_id]
-    election.conditions = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"    
+    election.conditions = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
     election.save
   else
-    params["type"] = params[:election_type]
-    params["event_id"] = session[:event_id]
-    params.delete("election_type")
-    params["conditions"] = "type = '#{params[:election_type]}' AND event_id = #{session[:event_id]}"
-    election = Election.create(params)
+    args[:conditions] = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
+    puts args.inspect
+    election = Kernel.const_get(args[:type]).create(args)
   end
   session[:message] = "#{election.name} saved!"
-  redirect "/admin/updated/"
+  redirect "/admin/event/#{params[:event_id]}/updated/"
 end
 
-get "/admin/updated/" do
-  @message = session[:message].dup
+get "/admin/event/:event_id/updated/" do
+  if session[:message]
+    @message = session[:message].dup
+  end
+  @event = Event.find(params[:event_id])
   session[:message] = nil
   haml :"admin/updated", {:layout => :"common/layout"}
 end
@@ -348,6 +382,23 @@ helpers do
   end
   def display_election_item(item, user, election)
     return display_rating(item, user, election) if election.is_a?(RatingElection)
+  end
+  
+  def set_span_size_for_live(is_open, user)
+    if is_open && user
+      'span7'
+    else
+      'span10'
+    end
+  end
+  
+  def conditional_ballot_form(active, attributes, &block)
+    if active
+      haml_tag :form, attributes, &block
+    else 
+      haml_concat capture_haml(&block)
+    end
+    
   end
   
   def display_rating(item, user, election)

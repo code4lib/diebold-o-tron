@@ -1,4 +1,6 @@
-%h1= @election.name
-%p Your ballot has been submitted.
-%p
-	%a{:href=>"/election/results/#{@election.id}"} View results
+.row-fluid
+  .hero-unit
+    %h3= @election.name
+    %p Your ballot has been submitted.
+    %p
+      %a.btn.btn-success{:href=>"/election/results/#{@election.id}"} View results

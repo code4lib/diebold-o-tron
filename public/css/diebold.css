@@ -12,16 +12,16 @@
 */
 
 
-dt.election_item {
+div.election_item {
     border-bottom-style: solid;
     border-bottom-color: gray;
     border-bottom-width: thin;
 
-    
+/*    
     margin-top: 8px;
     margin-bottom: 8px;
     margin-left: 8px;
-    margin-right: 8px;
+    margin-right: 8px;*/
 }
 
 dd.election_item_description {
@@ -86,11 +86,52 @@ tr.election_results {
 td.election_results_score {
     text-align:  center;
     font-weight: bold;
-    border-right-style: solid;
-    border-right-width: 1px;
-    border-right-color: #000000;
 }
 .election_item a {
 	color: #039;
 	cursor: pointer;
+}
+
+body {
+  padding-top: 60px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+.even_row {
+	background-color: #ddd;
+}
+.accordion-mini {
+    padding: 0;
+}
+
+.accordion-inner-mini {
+  padding: 2px 15px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.admin-menu-label {
+    padding-right: 5px;
+    text-align: right;
+}
+
+.rating-score.active {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #faa732;
+  background-image: -moz-linear-gradient(top, #fbb450, #f89406);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbb450), to(#f89406));
+  background-image: -webkit-linear-gradient(top, #fbb450, #f89406);
+  background-image: -o-linear-gradient(top, #fbb450, #f89406);
+  background-image: linear-gradient(to bottom, #fbb450, #f89406);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbb450', endColorstr='#fff89406', GradientType=0);
+  border-color: #f89406 #f89406 #ad6704;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #f89406;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);	
 }

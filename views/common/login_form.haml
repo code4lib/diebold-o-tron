@@ -1,12 +1,29 @@
--if @message
-	.login_message= @message
-.login_form
-	%form{:action=>"/login/", :method=>"POST"}
-		.login_form_label username
-		.login_form_element
-			%input.login_form_element{:type=>"text", :name=>"username"}
-		.login_form_label password
-		.login_form_element
-			%input.login_form_element{:type=>"password", :name=>"password"}			
-		%input{:type=>"hidden", :name=>"return", :value=>request.fullpath}
-		%input{:type=>"submit", :value=>"Log in!"}
+.row-fluid
+  .span10
+    #loginForm.modal.active{:tabindex=>"-1", :role=>"dialog"}  
+      %form{:action=>"/login/", :method=>"POST", :class=>"form-horizontal"}        
+        %div{:class=>"modal-header"}
+          %button.close{:type=>"button", :"data-dismiss"=>"modal"}×
+          %h3 Sign in
+        %div{:class=>"modal-body"}
+          -if @message
+            .alert.alert-danger
+              %strong= @message
+          %div{:class=>["alert","alert-info"]}
+            %strong Reminder:
+            Sign in with your
+            %a{:href=>"http://code4lib.org/", :target=>"_blank"} Code4lib.org
+            %em Drupal
+            username and password          
+          %div{:class=>"control-group"}
+            %label{:class=>"control-label", :for=>"username"} Username:
+            .controls
+              %input#username{:type=>'text', :name=>"username"}
+          %div{:class=>"control-group"}
+            %label{:class=>"control-label", :for=>'password'} Password
+            .controls
+              %input#password{:type=>"password", :name=>'password'}
+          %input{:type=>"hidden", :name=>"return", :value=>request.fullpath}    
+        %div{:class=>"modal-footer"}
+          %a.btn{:href=>"#"} Cancel
+          %button{:type=>"submit", :class=>["btn","btn-primary"]} Sign in    

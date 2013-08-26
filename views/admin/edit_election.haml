@@ -1,27 +1,47 @@
-%form{:action=>"/admin/election/edit/", :method=>"POST"}
-	- if @election.id
-		%input{:type=>"hidden", :name=>"id", :value=>@election.id}
-	%table
-		%tr
-			%td Title:
-			%td
-				%input{:type=>"text", :name=>"name", :value=>@election.name}
-		%tr
-			%td Election Type:
-			%td
-				%select{:name=>"election_type"}
-					- Item.find_by_sql(["SELECT DISTINCT(type) FROM items"]).each do |t|
-						- if @election.conditions =~ /type = '#{t.class}'/
-							%option{:selected=>true}= t.type
-						- else
-							%option= t.type
-		%tr
-			%td Start timestamp:
-			%td
-				%input{:type=>"text", :name=>"start_time", :value=>(@election.start_time||DateTime.now).to_s}
-		%tr
-			%td End timestamp:
-			%td
-				%input{:type=>"text", :name=>"end_time", :value=>(@election.end_time||DateTime.now).to_s}	
-	%input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}						
-	%input{:type=>"submit", :value=>"Save"}
+%form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/edit/", :method=>"POST"}
+  %input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}   
+  .row-fluid
+    .well
+      %h3
+        - if @election.id
+          %input{:type=>"hidden", :name=>"id", :value=>@election.id}
+          Edit
+        - else
+          Add
+        Election
+  .row-fluid
+    .span10
+      .control-group
+        %label.control-label{:for=>"#election_name"} Title
+        .controls
+          %input#election_name{:type=>"text",:name=>"name",:value=>@election.name}
+      .control-group
+        %label.control-label{:for=>"#election_type"} Type:
+        .controls
+          %select#election_type{:name=>"election_type"}
+            - Item.find_by_sql(["SELECT DISTINCT(type) FROM items"]).each do |t|
+              - if @election.conditions =~ /type = '#{t.class}'/
+                %option{:selected=>true}= t.type
+              - else
+                %option= t.type
+      .control-group
+        %label.control-label{:for=>"#election_start_date"} Start
+        .controls
+          %input.span2{:id=>"election_start_date", :type=>"date", :name=>"start_date", :value=>((@election.start_time ? @election.start_time : Date.today).strftime('%Y-%m-%d'))}
+          .input-append.bootstrap-timepicker-component
+            %input.timepicker-default.input-small{:type=>"text", :name=>"start_time", :value=>((@election.start_time ? @election.start_time : DateTime.now).strftime('%H:%M:%S'))}
+            %span.add-on
+              %i.icon-time
+
+      .control-group
+        %label.control-label{:for=>"#election_end_date"} End
+        .controls
+          %input.span2{:id=>"election_end_date", :type=>"date", :name=>"end_date", :value=>((@election.end_time ? @election.end_time : Date.today).strftime('%Y-%m-%d'))}
+          .input-append.bootstrap-timepicker-component
+            %input.timepicker-default.input-small{:type=>"text", :name=>"end_time", :value=>((@election.end_time ? @election.end_time : DateTime.now).strftime('%H:%M:%S'))}
+            %span.add-on
+              %i.icon-time          
+  .row-fluid
+    .well
+      %a.btn{:href=>"/admin/event/#{@event.id}"} Cancel
+      %input.btn.btn-primary{:type=>'submit', :value=>'Save'}
