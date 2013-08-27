@@ -23,7 +23,7 @@
             %label{:class=>"control-label", :for=>'password'} Password
             .controls
               %input#password{:type=>"password", :name=>'password'}
-          %input{:type=>"hidden", :name=>"return", :value=>request.fullpath}    
+          %input{:type=>"hidden", :name=>"return", :value=>"#{@next_page or  request.fullpath}"}    
         %div{:class=>"modal-footer"}
           %a.btn{:href=>"#"} Cancel
           %button{:type=>"submit", :class=>["btn","btn-primary"]} Sign in    
