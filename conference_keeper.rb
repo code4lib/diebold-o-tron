@@ -59,7 +59,6 @@ get "/election/:id" do
   @page_title = @election.name
   @event = @election.event
   check_auth_required(@election,session,"/election/#{@election.id}")
-	
   @items = @election.event.items.find(:all, :conditions=>@election.conditions, :order=>"name")  
 
   if @election.open?
@@ -149,7 +148,7 @@ end
 
 post "/login/" do
   if CONFIG['authentication'] && CONFIG['authentication'].include?('dummy')
-	 $stderr.puts "BYPASSING LOGIN OH NOES"
+    $stderr.puts("BYPASSING LOGIN OH NOES")
 	 login = 1
   else
   	client = DrupalClient.new(CONFIG["Drupal"]["host"], params[:username], params[:password])
@@ -361,7 +360,7 @@ post "/admin/event/:event_id/election/edit/" do
   end_time = params[:end_date]
   end_time << "T#{params[:end_time]}" if params[:end_time]  
   args[:end_time] = DateTime.parse(end_time)
-  auth_required = params[:auth_required]
+  auth_required = params[:auth_required] or false
   
   if args[:id]
     election = Election.find(args[:id])
@@ -370,7 +369,7 @@ post "/admin/event/:event_id/election/edit/" do
 
     election.start_time = args[:start_time]
     election.end_time = args[:end_time]   
-    election.event_id = session[:event_id]
+    election.event_id = args[:event_id]
     election.auth_required = auth_required
     election.conditions = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
     election.save
@@ -429,7 +428,7 @@ helpers do
     if election.auth_required?
         @user = Person.find_by_username(session[:username]) if session[:username]
         unless @user
-          session[:message] = "You must be logged in to view results for this election"
+          session[:message] = "You must be logged in to view this election or its results"
           next_url = "/login/error/"
           if next_page
             next_url += "?return=#{next_page}"
