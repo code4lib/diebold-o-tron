@@ -34,7 +34,7 @@
               %i.icon-time
 
       .control-group
-        %label.control-label{:for=>"#election_end_date"} End #{@election.auth_required}
+        %label.control-label{:for=>"#election_end_date"} End 
         .controls
           %input.span2{:id=>"election_end_date", :type=>"date", :name=>"end_date", :value=>((@election.end_time ? @election.end_time : Date.today).strftime('%Y-%m-%d'))}
           .input-append.bootstrap-timepicker-component
