@@ -34,13 +34,17 @@
               %i.icon-time
 
       .control-group
-        %label.control-label{:for=>"#election_end_date"} End
+        %label.control-label{:for=>"#election_end_date"} End 
         .controls
           %input.span2{:id=>"election_end_date", :type=>"date", :name=>"end_date", :value=>((@election.end_time ? @election.end_time : Date.today).strftime('%Y-%m-%d'))}
           .input-append.bootstrap-timepicker-component
             %input.timepicker-default.input-small{:type=>"text", :name=>"end_time", :value=>((@election.end_time ? @election.end_time : DateTime.now).strftime('%H:%M:%S'))}
             %span.add-on
-              %i.icon-time          
+              %i.icon-time
+      .control-group
+        %label.control-label{:for=>"#election_auth_required", :title=>"Require users log in to view the election or its results (hide from search engines)"} Authorization Required?
+        .controls
+          %input{:id=>"election_auth_required", :type=>"checkbox", :name=>"auth_required", :checked =>@election.auth_required}         
   .row-fluid
     .well
       %a.btn{:href=>"/admin/event/#{@event.id}"} Cancel

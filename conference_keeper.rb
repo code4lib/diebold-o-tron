@@ -57,8 +57,8 @@ get "/election/:id" do
   @election = Election.find(params[:id])
   @page_title = "Election:  #{@election.name}"
   @page_title = @election.name
-  @event = @election.event    
-  @user = Person.find_by_username(session[:username]) if session[:username]
+  @event = @election.event
+  check_auth_required(@election,session,"/election/#{@election.id}")
   @items = @election.event.items.find(:all, :conditions=>@election.conditions, :order=>"name")  
 
   if @election.open?
@@ -105,7 +105,11 @@ get "/election/results/:id" do
     return    
   end
   @election = Election.find(params[:id])
+  check_auth_required(@election,session, "/election/results/#{@election.id}")
+  
   @event = @election.event
+  
+
   @page_title = "Results:  #{@election.name}"
   @results = {}
   items = {}
@@ -143,8 +147,13 @@ get "/conferences/events/:id" do
 end
 
 post "/login/" do
-  client = DrupalClient.new(CONFIG["Drupal"]["host"], params[:username], params[:password])
-  login = client.login
+  if CONFIG['authentication'] && CONFIG['authentication'].include?('dummy')
+    $stderr.puts("BYPASSING LOGIN OH NOES")
+	 login = 1
+  else
+  	client = DrupalClient.new(CONFIG["Drupal"]["host"], params[:username], params[:password])
+  	login = client.login
+  end 
   if login == 0
     redirect "/login/error/"
     return
@@ -181,6 +190,11 @@ end
 
 get "/login/error/" do
   @message = "Incorrect username or password"
+  if session[:message]
+	  @message = session[:message]
+	  session.delete(:message)
+  end
+  @next_page = params[:return]
   haml :"common/login_form", {:layout => :"common/layout"}    
 end
 
@@ -335,7 +349,7 @@ end
 post "/admin/event/:event_id/election/edit/" do
   check_admin
   args = {}
-  [:name, :event_id, :id, :type].each do |p|
+  [:name, :event_id, :id, :type,:auth_required].each do |p|
     args[p] = params[p] if params[p]
   end
   
@@ -346,6 +360,7 @@ post "/admin/event/:event_id/election/edit/" do
   end_time = params[:end_date]
   end_time << "T#{params[:end_time]}" if params[:end_time]  
   args[:end_time] = DateTime.parse(end_time)
+  auth_required = params[:auth_required] or false
   
   if args[:id]
     election = Election.find(args[:id])
@@ -354,7 +369,8 @@ post "/admin/event/:event_id/election/edit/" do
 
     election.start_time = args[:start_time]
     election.end_time = args[:end_time]   
-    election.event_id = session[:event_id]
+    election.event_id = args[:event_id]
+    election.auth_required = auth_required
     election.conditions = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
     election.save
   else
@@ -407,4 +423,19 @@ helpers do
     selected = vote.score if vote
     haml :"election/rating_item", :locals=>{:item_id=>item.id, :selected=>selected}
   end  
+
+  def check_auth_required(election,session,next_page)
+    if election.auth_required?
+        @user = Person.find_by_username(session[:username]) if session[:username]
+        unless @user
+          session[:message] = "You must be logged in to view this election or its results"
+          next_url = "/login/error/"
+          if next_page
+            next_url += "?return=#{next_page}"
+          end
+          redirect next_url
+        end
+    end
+  end
+
 end
