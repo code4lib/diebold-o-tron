@@ -1,9 +1,10 @@
 $KCODE = 'u'
 require 'rubygems'
+require 'bundler/setup'
 require 'jcode'
 require 'sinatra'
 require 'haml'
-require 'active_record'
+require 'data_mapper'
 require 'yaml'
 require 'rack/conneg'
 require 'lib/models'
@@ -13,7 +14,8 @@ require 'json'
 
 configure do
   CONFIG = YAML.load_file('config/config.yml')
-  ActiveRecord::Base.establish_connection(CONFIG['database'])  
+  # ActiveRecord::Base.establish_connection(CONFIG['database'])  
+  DataMapper.setup(:default, CONFIG['database'])
   enable :sessions  
   set :session_secret, "wheedly-wheedly-whee!"
   set :haml, :format => :html5
@@ -39,7 +41,7 @@ end
 get "/election/" do
   @open = []
   @closed = []
-  Election.find(:all).each do | elect |
+  Election.all.each do | elect |
     if elect.open?
       @open << elect
     else
@@ -54,7 +56,7 @@ get "/election/:id" do
     redirect "/election"
     return
   end
-  @election = Election.find(params[:id])
+  @election = Election.get(params[:id])
   @page_title = "Election:  #{@election.name}"
   @page_title = @election.name
   @event = @election.event
@@ -69,10 +71,10 @@ get "/election/:id" do
 end
 
 post "/election/:id" do
-  @election = Election.find(params[:id])
+  @election = Election.get(params[:id])
   @event = @election.event 
   @page_title = "Ballot error:  #{@election.name}"
-  unless person = Person.find_by_username(session[:username])      
+  unless person = Person.find(:username=>session[:username])      
     @message = "You are not signed in properly!"
     return haml :"election/error", {:layout => :"common/layout"}  
   end
@@ -135,7 +137,7 @@ get "/election/results/:id" do
 end
 
 get "/conferences/events/" do
-  @events = Event.find(:all, :order=>"conference_id")
+  @events = Event.all(:order=>:conference_id)
   @page_title = "All Events"  
   haml :"events/index", {:layout => :"common/layout"}    
 end

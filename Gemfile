@@ -1,7 +1,8 @@
 source "http://rubygems.org"
 gem 'sinatra'
 gem 'haml'
-gem 'activerecord'
+gem 'data_mapper'
+gem 'dm-mysql-adapter'
 gem 'rack-conneg'
 gem 'rdiscount'
 gem 'json'
