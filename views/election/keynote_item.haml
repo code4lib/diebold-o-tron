@@ -8,6 +8,5 @@
       %a{:rel=>"tooltip", :title=>"Click name for description", :id=>[:election_item_link, item.id], :class=>'item_title'}= item.name
 .row-fluid.description.hide{:id=>[:election_item_description, item.id]}
   .span10.well
-    %strong
-      :markdown
-        #{item.description}
+    :markdown
+      #{item.description}
