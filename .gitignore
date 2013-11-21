@@ -1,2 +1,26 @@
 
 config/config.yml
+
+.idea/.name
+
+.idea/.rakeTasks
+
+.idea/diebold-o-tron.iml
+
+.idea/encodings.xml
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/scopes/scope_settings.xml
+
+.idea/vcs.xml
+
+.idea/workspace.xml
+
+Gemfile.lock
+
+config.ru
+
+log/sinatra.log
