@@ -425,8 +425,8 @@ helpers do
   end  
 
   def check_auth_required(election,session,next_page)
-    if election.auth_required?
-        @user = Person.find_by_username(session[:username]) if session[:username]
+    @user = Person.find_by_username(session[:username]) if session[:username]
+    if election.auth_required?        
         unless @user
           session[:message] = "You must be logged in to view this election or its results"
           next_url = "/login/error/"
