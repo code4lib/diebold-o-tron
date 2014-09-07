@@ -19,6 +19,8 @@ configure do
   set :haml, :format => :html5
 end
 
+after { ActiveRecord::Base.connection.close }
+
 use(Rack::Conneg) { |conneg|
   conneg.set :accept_all_extensions, false
   conneg.set :fallback, :html
