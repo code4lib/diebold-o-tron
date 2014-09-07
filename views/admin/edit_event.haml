@@ -8,7 +8,7 @@
 			%td Conference:
 			%td
 				%select{:name=>"conference_id"}
-					- Conference.find(:all, :order=>"id").each do |c|
+					- @conferences.each do |c|
 						%option{:value=>c.id}= c.name
 		%tr
 			%td Name:

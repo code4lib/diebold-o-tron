@@ -39,7 +39,7 @@ end
 get "/election/" do
   @open = []
   @closed = []
-  Election.find(:all).each do | elect |
+  Election.all.each do | elect |
     if elect.open?
       @open << elect
     else
@@ -59,7 +59,7 @@ get "/election/:id" do
   @page_title = @election.name
   @event = @election.event
   check_auth_required(@election,session,"/election/#{@election.id}")
-  @items = @election.event.items.find(:all, :conditions=>@election.conditions, :order=>"name")  
+  @items = @election.event.items.where(@election.conditions).order("name")  
 
   if @election.open?
     haml :"election/ballot", {:layout => :"common/layout"}  
@@ -72,7 +72,7 @@ post "/election/:id" do
   @election = Election.find(params[:id])
   @event = @election.event 
   @page_title = "Ballot error:  #{@election.name}"
-  unless person = Person.find_by_username(session[:username])      
+  unless person = Person.find_by(username: session[:username])      
     @message = "You are not signed in properly!"
     return haml :"election/error", {:layout => :"common/layout"}  
   end
@@ -84,7 +84,7 @@ post "/election/:id" do
   @page_title = "Ballot submitted:  #{@election.name}"
   params[:item].each do | item_id, score |
     
-    vote = Vote.find_or_create_by_item_id_and_election_id_and_person_id(item_id.to_i, @election.id, person.id)
+    vote = Vote.find_or_create_by(item_id: item_id.to_i, election_id: @election.id, person_id: person.id)
     next if score == "0" and vote.new_record?
     if score == "0" and !vote.new_record?
       Vote.delete(vote.id)
@@ -119,7 +119,7 @@ get "/election/results/:id" do
 
   @scores = []
   machine_readable = []
-  @election.votes.sum(:score, :group=>:item_id).each_pair do |item_id, score|
+  @election.votes.group(:item_id).sum(:score).each_pair do |item_id, score|
     @scores << score.to_i unless @scores.index(score.to_i)
     @results[score] ||=[]
     i = items[item_id]
@@ -135,7 +135,7 @@ get "/election/results/:id" do
 end
 
 get "/conferences/events/" do
-  @events = Event.find(:all, :order=>"conference_id")
+  @events = Event.order("conference_id").all
   @page_title = "All Events"  
   haml :"events/index", {:layout => :"common/layout"}    
 end
@@ -160,7 +160,7 @@ post "/login/" do
   end
   session[:username] = params[:username]
   session[:drupal_id] = params[:login]
-  unless Person.find_or_create_by_username(params[:username])
+  unless Person.find_or_create_by(username: params[:username])
     redirect '/profile/edit'
     return
   end
@@ -177,12 +177,12 @@ get "/logout/" do
 end
 
 get '/profile/' do  
-  @person = (Person.find_by_username(session[:username])||Person.new)
+  @person = (Person.find_by(username: session[:username])||Person.new)
   haml :"profile/edit", {:layout => :"common/layout"}    
 end
 
 post '/profile/edit' do  
-  person = Person.find_or_create_by_username(params[:username])
+  person = Person.find_or_create_by(username: params[:username])
   person.update_attributes(params)
   person.save
   haml :"profile/saved", {:layout => :"common/layout"}   
@@ -200,6 +200,7 @@ end
 
 get "/admin/" do
   check_admin
+  @events = Event.order("id DESC").all
   haml :"admin/index", {:layout => :"common/layout"}  
 end
 
@@ -211,13 +212,13 @@ end
 
 get "/admin/person/" do
   check_admin
-  @people = Person.find(:all, :order => "last_name, first_name, middle_name, email")
+  @people = Person.order("last_name, first_name, middle_name, email")
   haml :"admin/people", {:layout => :"common/layout"}    
 end
 
 get "/admin/conference/" do
   check_admin
-  @conferences = Conference.find(:all, :order=>"id")
+  @conferences = Conference.order("id")
   haml :"admin/conferences", {:layout => :"common/layout"}    
 end
 
@@ -239,17 +240,18 @@ post "/admin/conference/edit/" do
     conference = Conference.create(:name=>params[:name])
   end
   session[:message] = "#{conference.name} saved!"
-  redirect "/admin/updated/"
+  redirect "/admin/"
 end
 
 get "/admin/event/" do
   check_admin
-  @events = Event.find(:all, :order=>"conference_id")
+  @events = Event.order("conference_id")
   haml :"admin/events", {:layout => :"common/layout"}    
 end
 
 get "/admin/event/edit/" do
   check_admin
+  @conferences = Conference.order("id").all
   if params[:id]
     @event = Event.find(params[:id])
   else
@@ -273,30 +275,32 @@ post "/admin/event/edit/" do
     event = Event.create(params)
   end
   session[:message] = "#{event.name} saved!"
-  redirect "/admin/updated/"
+  redirect "/admin/"
 end
 
 get "/admin/event/:id" do
   check_admin
+  
+  @events = Event.order("conference_id").all
   begin    
     @event = Event.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     not_found unless @event
   end
-  @item_types = Item.all(:conditions=>{:event_id=>@event.id}, :select=>:type).map(&:type).uniq
+  @item_types = Item.where(:event_id=>@event.id).pluck(:type).uniq
   haml :"admin/index", {:layout => :"common/layout"}
 end
 
 get "/admin/event/:id/election/" do
   check_admin
   @event = Event.find(params[:id])
-  @elections = Election.find_all_by_event_id(params[:id], :order=>"id")
+  @elections = Election.where(:event_id => params[:id]).order("id")
   haml :"admin/elections", {:layout => :"common/layout"}    
 end
 
 get "/admin/event/:id/proposals/" do
   check_admin
-  @proposals = Item.find_all_by_event_id_and_type(params[:id], params[:type], :order=>"id")
+  @proposals = Item.where(:event_id => params[:id], :type => params[:type]).order("id")
   begin
     haml :"admin/proposals/#{params[:type].downcase}", {:layout => :"common/layout"}      
   rescue Errno::ENOENT
@@ -393,9 +397,21 @@ end
 
 helpers do
   def check_admin
-    return if CONFIG['administrators'] && CONFIG['administrators'].include?(session[:username])
-    halt 401, "Unauthorized"
+    unless is_admin?
+      halt 401, "Unauthorized"
+    end
   end
+  
+  def is_admin?
+    if CONFIG['administrators'] && CONFIG['administrators'].include?(session[:username])
+      true
+    elsif CONFIG['authentication'] && CONFIG['authentication'].include?('dummy')
+      true
+    else
+      false
+    end
+  end
+  
   def display_election_item(item, user, election)
     return display_rating(item, user, election) if election.is_a?(RatingElection)
   end
@@ -418,14 +434,14 @@ helpers do
   end
   
   def display_rating(item, user, election)
-    vote = Vote.find_by_item_id_and_person_id_and_election_id(item.id, user.id, election.id)
+    vote = Vote.find_by(item_id: item.id, person_id: user.try(:id), election_id: election.id)
     selected = 0
     selected = vote.score if vote
     haml :"election/rating_item", :locals=>{:item_id=>item.id, :selected=>selected}
   end  
 
   def check_auth_required(election,session,next_page)
-    @user = Person.find_by_username(session[:username]) if session[:username]
+    @user = Person.find_by(username: session[:username]) if session[:username]
     if election.auth_required?        
         unless @user
           session[:message] = "You must be logged in to view this election or its results"

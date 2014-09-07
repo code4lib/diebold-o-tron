@@ -17,7 +17,7 @@
             .input-append
               %select.btn.btn-mini{:name=>"event_id"}
                 %option{:value=>nil, :selected=>@event.nil?} Select event
-                - Event.find(:all, :order=>"id DESC").each do |event|
+                - @events.each do |event|
                   %option{:value=>event.id, :selected=>@event.nil? ? false : (event.id == @event.id)}= "#{event.name}: #{event.location}"
               %button.btn.btn-primary{:type=>'submit'} Set event                
 
