@@ -1,5 +1,5 @@
 .row-fluid
-  .span10
+  .col-md-10
     #loginForm.modal.active{:tabindex=>"-1", :role=>"dialog"}  
       %form{:action=>"/login/", :method=>"POST", :class=>"form-horizontal"}        
         %div{:class=>"modal-header"}
@@ -19,11 +19,11 @@
             (Don't have one? 
             %a{:href=>"http://code4lib.org/user/register", :target=>"_blank"}Register at Code4lib.org.
             )
-          %div{:class=>"control-group"}
+          %div{:class=>"form-group"}
             %label{:class=>"control-label", :for=>"username"} Username:
             .controls
               %input#username{:type=>'text', :name=>"username"}
-          %div{:class=>"control-group"}
+          %div{:class=>"form-group"}
             %label{:class=>"control-label", :for=>'password'} Password
             .controls
               %input#password{:type=>"password", :name=>'password'}

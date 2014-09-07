@@ -418,9 +418,9 @@ helpers do
   
   def set_span_size_for_live(is_open, user)
     if is_open && user
-      'span7'
+      'col-md-7'
     else
-      'span10'
+      'col-md-10'
     end
   end
   

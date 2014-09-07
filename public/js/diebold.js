@@ -1,37 +1,21 @@
-function show_hide(id) {  
-    if (document.getElementById(id).style.display != 'block') {
-        document.getElementById(id).style.display = 'block';
-    } else {
-        document.getElementById(id).style.display = 'none';
-    }
-}
-
 $(".description-shower").click(function() {
-	$(".description").show();
-	$('.description-shower').hide();
-	$('.description-hider').show();
+	$(".collapse").addClass('in');
+	$('.description-shower').addClass("hide");
+	$('.description-hider').removeClass("hide");
 });
 
 $(".description-hider").click(function() {
-	$(".description").hide();
-	$('.description-hider').hide();
-	$('.description-shower').show();
+  $(".collapse").removeClass('in');
+  $('.description-hider').addClass("hide");
+  $('.description-shower').removeClass("hide");
 });
-$(".item_title").click(function(){
-	var id = $(this).attr('id').split("_").pop();
-	var myId = "#election_item_description_" + id;
-	if($(myId).is(':hidden'))
-	{
-		$(myId).show();
-	} else {
-		$(myId).hide();
-	}
-});
-$(".rating-score").click(function(){
-    var idParts = $(this).attr('id').split("_");
-    var myId = "#item\\["+idParts[1]+"\\]";
-    $(myId).attr('value', $(this).attr('value'));
-})
-//$('.collapse').collapse();
+
 $("[rel=tooltip]").tooltip();
 $('.timepicker-default').timepicker({showSeconds:true, defaultTime:'value',showMeridian:false,template:'dropdown'});
+
+
+$("[data-toggle=buttons] input:checked").each(function() {
+	if ($(this).parent('label')) {
+		$(this).parent().addClass('active');
+	}
+})

@@ -1,5 +1,5 @@
 %form.form-horizontal{:action=>"/admin/event/#{@event.id}/proposals/edit/", :method=>"POST"}
-  .row-fluid
+  .row
     .well
       %h3
         - if @proposal.id 
@@ -9,16 +9,16 @@
           Edit
         = @proposal.type + " Proposal"
   %input{:type=>"hidden", :name=>"type", :value=>@proposal.type}
-  .row-fluid
-    .span10
-      .control-group
+  .row
+    .col-md-10
+      .form-group
         %label.control-label{:for=>"#proposal_name"} Name:
         .controls
-          %input#proposal_name.span5{:type=>"text", :name=>"name", :value=>@proposal.name}
-      .control-group
+          %input#proposal_name.form-control.col-md-5{:type=>"text", :name=>"name", :value=>@proposal.name}
+      .form-group
         %label.control-label{:for=>"#proposal_description"} Description
         .controls
-          %textarea.span9{:name=>"description", :rows=>10}= @proposal.description
+          %textarea.form-control.col-md-9{:name=>"description", :rows=>10}= @proposal.description
         
   .row-fluid
     .well

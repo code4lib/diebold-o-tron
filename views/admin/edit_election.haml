@@ -1,6 +1,6 @@
 %form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/edit/", :method=>"POST"}
   %input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}   
-  .row-fluid
+  .row
     .well
       %h3
         - if @election.id
@@ -9,43 +9,43 @@
         - else
           Add
         Election
-  .row-fluid
-    .span10
-      .control-group
+  .row
+    .col-md-10
+      .form-group
         %label.control-label{:for=>"#election_name"} Title
         .controls
-          %input#election_name{:type=>"text",:name=>"name",:value=>@election.name}
-      .control-group
+          %input.form-control#election_name{:type=>"text",:name=>"name",:value=>@election.name}
+      .form-group
         %label.control-label{:for=>"#election_type"} Type:
         .controls
-          %select#election_type{:name=>"election_type"}
+          %select.form-control#election_type{:name=>"election_type"}
             - Item.find_by_sql(["SELECT DISTINCT(type) FROM items"]).each do |t|
               - if @election.conditions =~ /type = '#{t.class}'/
                 %option{:selected=>true}= t.type
               - else
                 %option= t.type
-      .control-group
+      .form-group
         %label.control-label{:for=>"#election_start_date"} Start
         .controls
-          %input.span2{:id=>"election_start_date", :type=>"date", :name=>"start_date", :value=>((@election.start_time ? @election.start_time : Date.today).strftime('%Y-%m-%d'))}
-          .input-append.bootstrap-timepicker-component
-            %input.timepicker-default.input-small{:type=>"text", :name=>"start_time", :value=>((@election.start_time ? @election.start_time : DateTime.now).strftime('%H:%M:%S'))}
+          %input.form-control.col-md-2{:id=>"election_start_date", :type=>"date", :name=>"start_date", :value=>((@election.start_time ? @election.start_time : Date.today).strftime('%Y-%m-%d'))}
+          .input-group-append.bootstrap-timepicker-component
+            %input.form-control.timepicker-default.input-small{:type=>"text", :name=>"start_time", :value=>((@election.start_time ? @election.start_time : DateTime.now).strftime('%H:%M:%S'))}
             %span.add-on
               %i.icon-time
 
-      .control-group
+      .form-group
         %label.control-label{:for=>"#election_end_date"} End 
         .controls
-          %input.span2{:id=>"election_end_date", :type=>"date", :name=>"end_date", :value=>((@election.end_time ? @election.end_time : Date.today).strftime('%Y-%m-%d'))}
+          %input.form-control.col-md-2{:id=>"election_end_date", :type=>"date", :name=>"end_date", :value=>((@election.end_time ? @election.end_time : Date.today + 2.weeks).strftime('%Y-%m-%d'))}
           .input-append.bootstrap-timepicker-component
-            %input.timepicker-default.input-small{:type=>"text", :name=>"end_time", :value=>((@election.end_time ? @election.end_time : DateTime.now).strftime('%H:%M:%S'))}
+            %input.form-control.timepicker-default.input-small{:type=>"text", :name=>"end_time", :value=>((@election.end_time ? @election.end_time : DateTime.now).strftime('%H:%M:%S'))}
             %span.add-on
               %i.icon-time
-      .control-group
-        %label.control-label{:for=>"#election_auth_required", :title=>"Require users log in to view the election or its results (hide from search engines)"} Authorization Required?
-        .controls
+      .checkbox
+        %label{:for=>"#election_auth_required", :title=>"Require users log in to view the election or its results (hide from search engines)"} 
           %input{:id=>"election_auth_required", :type=>"checkbox", :name=>"auth_required", :checked =>@election.auth_required}         
-  .row-fluid
+          Authorization Required?
+  .row
     .well
       %a.btn{:href=>"/admin/event/#{@event.id}"} Cancel
       %input.btn.btn-primary{:type=>'submit', :value=>'Save'}

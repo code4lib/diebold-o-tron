@@ -1,7 +1,7 @@
-.row-fluid
-  .navbar
-    .navbar-inner
-      %ul.nav
+.row
+  .navbar.navbar-default
+    .container
+      %ul.nav.navbar-nav
         - ["Conference", "Event", "Person"].each do |item|  
           %li.dropdown  
             %a.dropdown-toggle{:href=>"#", :"data-toggle"=>"dropdown"}
@@ -13,17 +13,18 @@
               %li
                 %a{:href=>"/admin/#{item.downcase}/"} Edit #{item.downcase} 
         %li
-          %form.inline-form{:action=>"/admin/set_event", :method=>"POST"}
-            .input-append
-              %select.btn.btn-mini{:name=>"event_id"}
+          %form.navbar-form.inline-form{:action=>"/admin/set_event", :method=>"POST"}
+            .input-group
+              %select.form-control{:name=>"event_id"}
                 %option{:value=>nil, :selected=>@event.nil?} Select event
                 - @events.each do |event|
                   %option{:value=>event.id, :selected=>@event.nil? ? false : (event.id == @event.id)}= "#{event.name}: #{event.location}"
-              %button.btn.btn-primary{:type=>'submit'} Set event                
+              .input-group-addon
+                %button.btn.btn-xs.btn-primary{:type=>'submit'} Set event                
 
 - if defined?(@event)
   .row-fluid
-    .span10
+    .col-md-10
       %table.table.table-hover
         - ["Election"].each do |item|
           %tr

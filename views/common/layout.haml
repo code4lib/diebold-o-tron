@@ -10,71 +10,69 @@
     %title #{@page_title||'Diebold-o-tron'} @ Code4Lib
 
   %body
-    %div{:class=>["navbar","navbar-inverse","navbar-fixed-top"]}
-      %div{:class=>"navbar-inner"}
-        %a{:class=>"brand", :href=>"#"} Code4Lib Diebold-o-Tron
-        %ul{:class=>"nav"}
-          %li.active
-            %a{:href=>"/"} Home
-          - if is_admin?
-            %li
-              %a{:href=>"/admin/"} Admin
+    %div{:class=>["navbar","navbar-inverse"], :role => 'navigation'}
+      %div{:class=>"container"}
+        %div{:class => 'navbar-header'}
+          %a{:class=>"navbar-brand", :href=>"/"} Code4Lib Diebold-o-Tron
+      
               
-        %ul{:class=>"nav pull-right"}
+        %ul{:class=>"nav navbar-nav navbar-right"}
           -if session[:username]                        
             %li.dropdown
               %a{:href=>"#", :class=>"dropdown-toggle", :"data-toggle"=>"dropdown"}                  
                 Signed in as
                 = session[:username]
-                %b.caret
-              %ul{:class=>"dropdown-menu"}
+                %span.caret
+              %ul{:class=>"dropdown-menu", :role => 'menu'}
                 %li
                   %a{:href=>"/profile/"} Profile
                 %li
                   %a{:href=>"/logout/"} Sign out
           - else
             %li.active
-              %a{:href=>"#loginForm", :role=>"button", :"data-toggle"=>"modal"} Sign in
-    %div{:class=>"container-fluid"}
-      %div{:class=>"row-fluid"}
-        .span2
+              %a{:href=>"#loginForm", :class => 'btn btn-primary navbar-btn', :role=>"button", :"data-toggle"=>"modal"} Sign in
+    %div{:class=>"container"}
+      %div{:class=>"row"}
+        .col-md-2.col-sm-3
           %div{:class=>["well","sidebar-nav"]}
             = haml :"/common/left_nav"
-        .span10
+        .col-md-10.col-sm-9
           - if @event
-            %div{:class=>"row-fluid"}
-              .span9
+            %div{:class=>"row"}
+              .col-md-12
                 %h2 #{@event.name}:  #{@event.location}
           =yield
           
     - unless session[:username]
-      #loginForm.modal.hide{:tabindex=>"-1", :role=>"dialog"}  
-        %form{:action=>"/login/", :method=>"POST", :class=>"form-horizontal"}        
-          %div{:class=>"modal-header"}
-            %button.close{:type=>"button", :"data-dismiss"=>"modal"}×
-            %h3 Sign in
-          %div{:class=>"modal-body"}
-            %div{:class=>["alert","alert-info"]}
-              %strong Reminder:
-              Sign in with your
-              %a{:href=>"http://code4lib.org/", :target=>"_blank"} Code4lib.org
-              %em Drupal
-              username and password
-              %br
-              (Don't have one? 
-              %a{:href=>"http://code4lib.org/user/register", :target=>"_blank"}Register at Code4lib.org.
-              )          
-            %div{:class=>"control-group"}
-              %label{:class=>"control-label", :for=>"username"} Username:
-              .controls
-                %input#username{:type=>'text', :name=>"username"}
-            %div{:class=>"control-group"}
-              %label{:class=>"control-label", :for=>'password'} Password
-              .controls
-                %input#password{:type=>"password", :name=>'password'}
-            %input{:type=>"hidden", :name=>"return", :value=>request.fullpath}    
-          %div{:class=>"modal-footer"}
-            %a.btn{:href=>"#", :"data-dismiss"=>"modal"} Cancel
-            %button{:type=>"submit", :class=>["btn","btn-primary"]} Sign in                 
+      #loginForm.modal.fade{:tabindex=>"-1", :role=>"dialog"}
+        %form{:action=>"/login/", :method=>"POST"}    
+          %div.modal-dialog
+            %div.modal-content
+              %div{:class=>"modal-header"}
+                %button.close{:type=>"button", :"data-dismiss"=>"modal"}×
+                %h3 Sign in
+              %div{:class=>"modal-body"}
+                %div{:class=>["alert","alert-info"]}
+                  %strong Reminder:
+                  Sign in with your
+                  %a{:href=>"http://code4lib.org/", :target=>"_blank"} Code4lib.org
+                  %em Drupal
+                  username and password
+                  %br
+                  (Don't have one? 
+                  %a{:href=>"http://code4lib.org/user/register", :target=>"_blank"}Register at Code4lib.org.
+                  )          
+                %div{:class=>"form-group"}
+                  %label{:class=>"form-label", :for=>"username"} Username:
+                  .controls
+                    %input#username.form-control{:type=>'text', :name=>"username"}
+                %div{:class=>"form-group"}
+                  %label{:class=>"form-label", :for=>'password'} Password
+                  .controls
+                    %input#password.form-control{:type=>"password", :name=>'password'}
+                %input{:type=>"hidden", :name=>"return", :value=>request.fullpath}    
+              %div{:class=>"modal-footer"}
+                %a.btn{:href=>"#", :"data-dismiss"=>"modal"} Cancel
+                %button{:type=>"submit", :class=>["btn","btn-primary"]} Sign in                 
     %script{:type => "text/javascript", :src => '/js/bootstrap-timepicker.js'}            
     %script{:type => "text/javascript", :src => '/js/diebold.js'}            
