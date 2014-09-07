@@ -1,4 +1,5 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
+gem 'rake'
 gem 'sinatra'
 gem 'haml'
 gem 'activerecord', '3.1.0'
