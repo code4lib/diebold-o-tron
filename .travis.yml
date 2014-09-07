@@ -1,0 +1,6 @@
+language: ruby
+rvm:
+  - 2.1.2
+before_script:
+  - "cp config/config.yml-dist config/config.yml"
+  - "bundle exec rake db:migrate"
