@@ -1,13 +1,13 @@
-$KCODE = 'u'
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'lib'))
+
 require 'rubygems'
-require 'jcode'
 require 'sinatra'
 require 'haml'
 require 'active_record'
 require 'yaml'
 require 'rack/conneg'
-require 'lib/models'
-require 'lib/drupal_client'
+require 'models'
+require 'drupal_client'
 require 'rdiscount'
 require 'json'
 
