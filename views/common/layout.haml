@@ -16,6 +16,10 @@
         %ul{:class=>"nav"}
           %li.active
             %a{:href=>"/"} Home
+          - if is_admin?
+            %li
+              %a{:href=>"/admin/"} Admin
+              
         %ul{:class=>"nav pull-right"}
           -if session[:username]                        
             %li.dropdown
