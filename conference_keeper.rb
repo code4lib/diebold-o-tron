@@ -229,12 +229,6 @@ post "/admin/set_event" do
   redirect "/admin/event/#{params[:event_id]}"
 end
 
-get "/admin/person/" do
-  check_admin
-  @people = Person.order("last_name, first_name, middle_name, email")
-  haml :"admin/people", {:layout => :"common/layout"}    
-end
-
 get "/admin/conference/" do
   check_admin
   @conferences = Conference.order("id")
