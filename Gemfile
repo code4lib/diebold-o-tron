@@ -2,7 +2,7 @@ source "https://rubygems.org"
 gem 'rake'
 gem 'sinatra'
 gem 'haml'
-gem 'activerecord', '4.1.5'
+gem 'activerecord', '4.1.6'
 gem 'rack-conneg'
 gem 'rdiscount'
 gem 'json'
@@ -20,3 +20,6 @@ group :test do
   gem 'capybara'
   gem 'database_cleaner'
 end
+
+gem 'omniauth'
+gem 'omniauth-oauth2'

@@ -10,6 +10,8 @@ require 'models'
 require 'drupal_client'
 require 'rdiscount'
 require 'json'
+require 'omniauth'
+require 'omniauth-oauth2'
 
 configure do
   CONFIG = YAML.load_file('config/config.yml')
@@ -21,6 +23,36 @@ end
 
 after { ActiveRecord::Base.connection.close }
 
+class OmniAuth::Strategies::Code4lib < OmniAuth::Strategies::OAuth2
+  option :name, :code4lib
+  option :client_options, CONFIG['Drupal']['oauth']['client']
+  option :scope, "openid offline_access email profile"
+
+  uid { raw_info['sub'] }
+
+  info do
+    {
+      :email => raw_info['email']
+    }
+  end
+
+  extra do
+    {
+      'raw_info' => raw_info
+    }
+  end
+
+  def raw_info
+    @raw_info ||= access_token.get('/oauth2/userinfo').parsed
+  end
+end
+
+use OmniAuth::Builder do
+  provider :developer if CONFIG['authentication'] == 'developer'
+  provider :code4lib, CONFIG['Drupal']['oauth']['identifier'], CONFIG['Drupal']['oauth']['secret']
+end
+
+
 use(Rack::Conneg) { |conneg|
   conneg.set :accept_all_extensions, false
   conneg.set :fallback, :html
@@ -30,8 +62,45 @@ use(Rack::Conneg) { |conneg|
   conneg.provide([:json, :xml, :html])
 }
 
-before do  
-  content_type negotiated_type
+before do
+  if negotiated?
+    content_type negotiated_type
+  end
+end
+
+get '/login/' do
+  redirect "/auth/#{CONFIG['authentication']}"
+end
+
+post '/auth/developer/callback' do
+  auth_hash = request.env['omniauth.auth']
+  session[:username] = auth_hash['uid']
+  Person.find_or_create_by(username: session[:username])
+
+  redirect request.env['omniauth.origin'] || '/'
+end
+
+get '/auth/code4lib/callback' do
+  auth_hash = request.env['omniauth.auth']
+  session[:username] = auth_hash['uid']
+  Person.find_or_create_by(username: session[:username])
+
+  redirect request.env['omniauth.origin'] || '/'
+end
+
+get "/login/error/" do
+  @message = "Incorrect username or password"
+  if session[:message]
+    @message = session[:message]
+    session.delete(:message)
+  end
+  @origin = params[:origin]
+  haml :"common/login_form", {:layout => :"common/layout"}    
+end
+
+get '/logout/' do
+  session[:username] = nil
+  redirect "/"
 end
 
 get "/" do
@@ -146,58 +215,6 @@ get "/conferences/events/:id" do
   @event = Event.find(params[:id])
   @page_title = "#{@event.name} Home"
   haml :"events/event", {:layout => :"common/layout"}    
-end
-
-post "/login/" do
-  if CONFIG['authentication'] && CONFIG['authentication'].include?('dummy')
-    $stderr.puts("BYPASSING LOGIN OH NOES")
-	 login = 1
-  else
-  	client = DrupalClient.new(CONFIG["Drupal"]["host"], params[:username], params[:password])
-  	login = client.login
-  end 
-  if login == 0
-    redirect "/login/error/"
-    return
-  end
-  session[:username] = params[:username]
-  session[:drupal_id] = params[:login]
-  unless Person.find_or_create_by(username: params[:username])
-    redirect '/profile/edit'
-    return
-  end
-  if params[:return] == "/login/error/"
-    redirect "/"
-  else
-    redirect params[:return]
-  end
-end
-
-get "/logout/" do
-  session.clear
-  redirect "/"
-end
-
-get '/profile/' do  
-  @person = (Person.find_by(username: session[:username])||Person.new)
-  haml :"profile/edit", {:layout => :"common/layout"}    
-end
-
-post '/profile/edit' do  
-  person = Person.find_or_create_by(username: params[:username])
-  person.update_attributes(params)
-  person.save
-  haml :"profile/saved", {:layout => :"common/layout"}   
-end
-
-get "/login/error/" do
-  @message = "Incorrect username or password"
-  if session[:message]
-	  @message = session[:message]
-	  session.delete(:message)
-  end
-  @next_page = params[:return]
-  haml :"common/login_form", {:layout => :"common/layout"}    
 end
 
 get "/admin/" do
@@ -407,8 +424,6 @@ helpers do
   def is_admin?
     if CONFIG['administrators'] && CONFIG['administrators'].include?(session[:username])
       true
-    elsif CONFIG['authentication'] && CONFIG['authentication'].include?('dummy')
-      true
     else
       false
     end
@@ -449,7 +464,7 @@ helpers do
           session[:message] = "You must be logged in to view this election or its results"
           next_url = "/login/error/"
           if next_page
-            next_url += "?return=#{next_page}"
+            next_url += "?origin=#{next_page}"
           end
           redirect next_url
         end

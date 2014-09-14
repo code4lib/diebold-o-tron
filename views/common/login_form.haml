@@ -1,33 +1,13 @@
-.row-fluid
-  .col-md-10
-    #loginForm.modal.active{:tabindex=>"-1", :role=>"dialog"}  
-      %form{:action=>"/login/", :method=>"POST", :class=>"form-horizontal"}        
-        %div{:class=>"modal-header"}
-          %button.close{:type=>"button", :"data-dismiss"=>"modal"}×
-          %h3 Sign in
-        %div{:class=>"modal-body"}
-          -if @message
-            .alert.alert-danger
-              %strong= @message
-          %div{:class=>["alert","alert-info"]}
-            %strong Reminder:
-            Sign in with your
-            %a{:href=>"http://code4lib.org/", :target=>"_blank"} Code4lib.org
-            %em Drupal
-            username and password
-            %br
-            (Don't have one? 
-            %a{:href=>"http://code4lib.org/user/register", :target=>"_blank"}Register at Code4lib.org.
-            )
-          %div{:class=>"form-group"}
-            %label{:class=>"control-label", :for=>"username"} Username:
-            .controls
-              %input#username{:type=>'text', :name=>"username"}
-          %div{:class=>"form-group"}
-            %label{:class=>"control-label", :for=>'password'} Password
-            .controls
-              %input#password{:type=>"password", :name=>'password'}
-          %input{:type=>"hidden", :name=>"return", :value=>"#{@next_page or  request.fullpath}"}    
-        %div{:class=>"modal-footer"}
-          %a.btn{:href=>"#"} Cancel
-          %button{:type=>"submit", :class=>["btn","btn-primary"]} Sign in    
+%form{:action=>"/login/", :method=>"POST", :class=>"form-horizontal"}   
+  %div
+    -if @message
+      .alert.alert-danger
+        %strong= @message
+    %div{:class=>["alert","alert-info"]}
+      %a{:href=>"/auth/code4lib?origin=#{@origin}"} Sign in
+      with your
+      Code4lib.org account.
+      %br
+      (Don't have one? 
+      %a{:href=>"http://code4lib.org/user/register", :target=>"_blank"}Register at Code4lib.org.
+      )
