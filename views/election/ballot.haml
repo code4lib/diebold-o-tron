@@ -16,7 +16,7 @@
         - i = 0
         - @items.each do |item|
           - (a,b) = i.divmod(2)            
-          = haml(:"election/#{item.class.to_s.downcase}_item", :locals=>{:item=>item, :even_row=>b.even?})
+          = haml(:"election/item", :locals=>{:item=>item, :even_row=>b.even?})
           - i += 1
     %div{:class=>"row"}
       .col-md-10.well{:class=>"well-large"}

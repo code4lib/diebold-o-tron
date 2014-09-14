@@ -1,10 +1,8 @@
-%form{:action=>"/admin/conference/edit/", :method=>"POST"}
-	- if @conference
+%form{:action=>"/admin/conference/", :method=>"POST"}
+	- if @conference.id
 		%input{:type=>"hidden", :name=>"id", :value=>@conference.id}
-	Conference name:
-	- if @conference
-		%input{:type=>"text", :name=>"name", :value=>@conference.name}
-	- else
-		%input{:type=>"text", :name=>"name"}
+	%div.form-group
+		%label{:for=>"name"} Conference Name
+		%input.form-control{:type=>"text", :name=>"name", :value=>@conference.name}
 
-	%input{:type=>"submit", :value=>"save"}
+	%input.btn.btn-primary{:type=>"submit", :value=>"save"}

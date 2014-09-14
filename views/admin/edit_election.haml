@@ -1,4 +1,4 @@
-%form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/edit/", :method=>"POST"}
+%form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/", :method=>"POST"}
   %input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}   
   .row
     .well
@@ -19,11 +19,11 @@
         %label.control-label{:for=>"#election_type"} Type:
         .controls
           %select.form-control#election_type{:name=>"election_type"}
-            - Item.find_by_sql(["SELECT DISTINCT(type) FROM items"]).each do |t|
-              - if @election.conditions =~ /type = '#{t.class}'/
-                %option{:selected=>true}= t.type
+            - ["Presentation", "Location", "Keynote", "T-Shirt"].each do |t|
+              - if @election.conditions =~ /type = '#{t}'/
+                %option{:selected=>true}= t
               - else
-                %option= t.type
+                %option= t
       .form-group
         %label.control-label{:for=>"#election_start_date"} Start
         .controls

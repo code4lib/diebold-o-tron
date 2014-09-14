@@ -1,0 +1,8 @@
+%a.btn.btn-primary{:href=>"/admin/event/#{@event.id}/edit"} Edit
+
+%h3 Elections
+%a.btn.btn-primary{:href=>"/admin/event/#{@event.id}/election/new"} add
+%ul
+- @event.elections.each do |election|
+  %li
+    %a{:href=>"/admin/event/#{@event.id}/election/#{election.id}"}= election.name

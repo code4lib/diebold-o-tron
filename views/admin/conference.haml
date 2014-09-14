@@ -1,0 +1,6 @@
+%h1= @conference.name
+%a.btn.btn-primary{:href => "/admin/conference/#{@conference.id}/event/new"} Add Event
+%ul.list-unstyled
+  - @conference.events.each do |e|
+    %li
+      %a{:href => "/admin/event/#{e.id}"}= e.name

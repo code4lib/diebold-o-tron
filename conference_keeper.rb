@@ -130,7 +130,7 @@ get "/election/:id" do
   @page_title = @election.name
   @event = @election.event
   check_auth_required(@election,session,"/election/#{@election.id}")
-  @items = @election.event.items.where(@election.conditions).order("name")  
+  @items = @election.items.order("name")  
 
   if @election.open?
     haml :"election/ballot", {:layout => :"common/layout"}  
@@ -219,7 +219,7 @@ end
 
 get "/admin/" do
   check_admin
-  @events = Event.order("id DESC").all
+  @conferences = Conference.order("id")
   haml :"admin/index", {:layout => :"common/layout"}  
 end
 
@@ -235,7 +235,19 @@ get "/admin/conference/" do
   haml :"admin/conferences", {:layout => :"common/layout"}    
 end
 
-get "/admin/conference/edit/" do
+get "/admin/conference/new" do
+  check_admin
+  @conference = Conference.new
+  haml :"admin/edit_conference", {:layout => :"common/layout"}
+end
+
+get "/admin/conference/:id" do
+  check_admin
+  @conference = Conference.find(params[:id])
+  haml :"admin/conference", {:layout => :"common/layout"}
+end
+
+get "/admin/conference/:id/edit" do
   check_admin
   if params[:id]
     @conference = Conference.find(params[:id])
@@ -243,7 +255,7 @@ get "/admin/conference/edit/" do
   haml :"admin/edit_conference", {:layout => :"common/layout"}
 end
 
-post "/admin/conference/edit/" do
+post "/admin/conference/" do
   check_admin
   if params[:id]
     conference = Conference.find(params[:id])
@@ -256,15 +268,15 @@ post "/admin/conference/edit/" do
   redirect "/admin/"
 end
 
-get "/admin/event/" do
-  check_admin
-  @events = Event.order("conference_id")
-  haml :"admin/events", {:layout => :"common/layout"}    
+get "/admin/conference/:conference_id/event/new" do
+  @conference = Conference.find(params[:conference_id])
+  @event = Event.new conference_id: @conference.id
+  
+  haml :"admin/edit_event", {:layout => :"common/layout"}
 end
 
-get "/admin/event/edit/" do
+get "/admin/event/:id/edit" do
   check_admin
-  @conferences = Conference.order("id").all
   if params[:id]
     @event = Event.find(params[:id])
   else
@@ -273,7 +285,7 @@ get "/admin/event/edit/" do
   haml :"admin/edit_event", {:layout => :"common/layout"}
 end
 
-post "/admin/event/edit/" do
+post "/admin/event/" do
   check_admin
   if params[:id]
     event = Event.find(params[:id])
@@ -288,7 +300,7 @@ post "/admin/event/edit/" do
     event = Event.create(params)
   end
   session[:message] = "#{event.name} saved!"
-  redirect "/admin/"
+  redirect "/admin/conference/#{event.conference_id}"
 end
 
 get "/admin/event/:id" do
@@ -300,8 +312,7 @@ get "/admin/event/:id" do
   rescue ActiveRecord::RecordNotFound
     not_found unless @event
   end
-  @item_types = Item.where(:event_id=>@event.id).pluck(:type).uniq
-  haml :"admin/index", {:layout => :"common/layout"}
+  haml :"admin/event", {:layout => :"common/layout"}
 end
 
 get "/admin/event/:id/election/" do
@@ -322,48 +333,62 @@ get "/admin/event/:id/proposals/" do
   
 end
 
-get "/admin/event/:event_id/proposals/edit/" do
+get "/admin/event/:event_id/election/:election_id/proposals/new" do
   check_admin
   @event = Event.find(params[:event_id])
-  if params[:id]
-    @proposal = Item.find(params[:id])
-  else
-    @proposal = Kernel.const_get(params[:type]).new
-  end
-  begin
-    haml :"admin/proposals/edit_#{params[:type].downcase}", {:layout => :"common/layout"}
-  rescue Errno::ENOENT
-    haml :"admin/edit_proposal", {:layout => :"common/layout"}    
-  end    
+  @election = Election.find(params[:election_id])
+  @proposal = Item.new election_id: @election_id, event_id: @event.id
+  haml :"admin/edit_proposal", {:layout => :"common/layout"}
 end
 
-post "/admin/event/:event_id/proposals/edit/" do
+get "/admin/event/:event_id/election/:election_id/proposals/:id/edit" do
   check_admin
+  @event = Event.find(params[:event_id])
+  @election = Election.find(params[:election_id])
+  @proposal = Item.find(params[:id])
+  haml :"admin/edit_proposal", {:layout => :"common/layout"}
+end
+
+post "/admin/event/:event_id/election/:election_id/proposals/" do
+  check_admin
+  @election = Election.find(params[:election_id])
   if params[:id]
     proposal = Item.find(params[:id])    
   else
-    proposal = Kernel.const_get(params[:type]).new
+    proposal = Item.new election_id: @election.id
   end
   
   proposal.attributes = params.reject{|k,v| !proposal.attributes.keys.member?(k.to_s) }
   proposal.save
   
   session[:message] = "#{proposal.name} saved!"
-  redirect "/admin/event/#{params[:event_id]}/updated/" 
+  redirect "/admin/event/#{params[:event_id]}/election/#{params[:election_id]}" 
 end
 
-get "/admin/event/:event_id/election/edit/" do
+
+get "/admin/event/:event_id/election/new" do
   check_admin
   @event = Event.find(params[:event_id])
-  if params[:id]
-    @election = Election.find(params[:id])
-  else
-    @election = Election.new
-  end
+  @election = Election.new event_id: @event_id
   haml :"admin/edit_election", {:layout => :"common/layout"}
 end
 
-post "/admin/event/:event_id/election/edit/" do
+get "/admin/event/:event_id/election/:id" do
+  check_admin
+  @event = Event.find(params[:event_id])
+  @election = Election.find(params[:id])
+  haml :"admin/election", {:layout => :"common/layout"}
+end
+
+
+get "/admin/event/:event_id/election/:id/edit" do
+  check_admin
+  @event = Event.find(params[:event_id])
+  @election = Election.find(params[:id])
+  haml :"admin/edit_election", {:layout => :"common/layout"}
+end
+
+post "/admin/event/:event_id/election/" do
   check_admin
   args = {}
   [:name, :event_id, :id, :type,:auth_required].each do |p|
@@ -388,15 +413,12 @@ post "/admin/event/:event_id/election/edit/" do
     election.end_time = args[:end_time]   
     election.event_id = args[:event_id]
     election.auth_required = auth_required
-    election.conditions = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
     election.save
   else
-    args[:conditions] = "type = '#{params[:election_type]}' AND event_id = #{args[:event_id]}"    
-    puts args.inspect
     election = Kernel.const_get(args[:type]).create(args)
   end
   session[:message] = "#{election.name} saved!"
-  redirect "/admin/event/#{params[:event_id]}/updated/"
+  redirect "/admin/event/#{params[:event_id]}"
 end
 
 get "/admin/event/:event_id/updated/" do

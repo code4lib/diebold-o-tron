@@ -1,14 +1,9 @@
 %h1 Edit Event:
 
-%form{:role => 'form',:action=>"/admin/event/edit/", :method=>"POST"}
+%form{:role => 'form',:action=>"/admin/event/", :method=>"POST"}
 	- if @event.id
 		%input{:type=>"hidden", :name=>"id", :value=>@event.id}
-	.form-group
-		%label
-			Conference:
-			%select.form-control{:name=>"conference_id"}
-				- @conferences.each do |c|
-					%option{:value=>c.id}= c.name
+	%input{:type=>"hidden", :name=>"conference_id", :value=>@event.conference_id}
 	.form-group
 		%label
 			Name:
