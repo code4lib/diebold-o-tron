@@ -416,6 +416,11 @@ end
 
 helpers do
   def check_admin
+    unless session[:username]
+      session[:message] = "You must be logged in to view this page"
+      redirect "/login/error/?origin=#{request.path_info}"
+    end
+    
     unless is_admin?
       halt 401, "Unauthorized"
     end
