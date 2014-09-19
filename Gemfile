@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 gem 'rake'
 gem 'sinatra'
+gem 'thin'
 gem 'haml'
 gem 'activerecord', '4.1.6'
 gem 'rack-conneg'
