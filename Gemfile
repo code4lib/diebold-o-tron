@@ -8,6 +8,12 @@ gem 'rack-conneg'
 gem 'rdiscount'
 gem 'json'
 
+group :deployment do
+  gem 'capistrano-rails'
+  gem 'capistrano-chruby'
+  gem 'capistrano-bundler'
+end
+
 group :production do
   gem 'mysql2', "~> 0.3.16"
 end
