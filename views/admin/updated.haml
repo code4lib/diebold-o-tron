@@ -1,7 +1,0 @@
-%h1= @message
-
-%div
-  -if defined?(@event)
-    %a{:href=>"/admin/event/#{@event.id}"} Return to #{@event.name} admin home
-  - else
-    %a{:href=>"/admin/"} Return to Admin menu

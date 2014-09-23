@@ -4,6 +4,7 @@ end
 
 class Election < ActiveRecord::Base
   belongs_to :event
+  has_many :items
   has_many :votes
   # @@children = []
   # 
@@ -31,51 +32,10 @@ end
 class Item < ActiveRecord::Base
   belongs_to :event
   has_many :votes
-  has_many :participants, :dependent => :destroy
-  # @@children = []
-  # 
-  # def self.inherited(sub)
-  #   @@children << sub
-  # end
-  # 
-  # def self.children
-  #   return @@children
-  # end
-  
-  def has_role?(person, role)
-    self.participants.each do | part |
-      return true if person.id == part.person_id and role.downcase == part.role.downcase
-    end
-    return false
-  end
-  
-  def clear_role(role)
-    entries = []
-    self.participants.each do | part |
-      entries << part if part.role.downcase == role.downcase
-    end
-    self.participants.delete(entries) unless entries.empty?
-  end
-end
-
-class Keynote < Item;end
-
-class Location < Item;end
-
-class Participant < ActiveRecord::Base
-  belongs_to :person
-  belongs_to :item
 end
 
 class Person < ActiveRecord::Base
   has_many :votes
-  has_many :participants
-  
-  def last_first
-    name = "#{self.last_name}, #{self.first_name}"
-    name << " #{self.middle_name}" unless self.middle_name.blank?
-    return name
-  end
   
   def full_display
     name = self.first_name
@@ -93,25 +53,11 @@ class Person < ActiveRecord::Base
     
 end
 
-class Presentation < Item
-  def presenters
-    people = []
-    self.participants.each do | part |
-      people << part.person if part.role.downcase == "presenter"
-    end
-    return people
-  end
-end
-
 class RatingElection < Election;end
 
-class TShirt < Item;end
 
 class Vote < ActiveRecord::Base
   belongs_to :election
   belongs_to :person
   belongs_to :item
 end
-
-
-

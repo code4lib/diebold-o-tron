@@ -19,8 +19,6 @@ config/config.yml
 
 .idea/workspace.xml
 
-Gemfile.lock
-
-config.ru
-
 log/sinatra.log
+
+*.sqlite3

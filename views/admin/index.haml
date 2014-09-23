@@ -1,44 +1,8 @@
-.row-fluid
-  .navbar
-    .navbar-inner
-      %ul.nav
-        - ["Conference", "Event", "Person"].each do |item|  
-          %li.dropdown  
-            %a.dropdown-toggle{:href=>"#", :"data-toggle"=>"dropdown"}
-              = item
-              %b.caret
-            %ul.dropdown-menu
-              %li
-                %a{:href=>"/admin/#{item.downcase}/edit/"} Add #{item.downcase}
-              %li
-                %a{:href=>"/admin/#{item.downcase}/"} Edit #{item.downcase} 
-        %li
-          %form.inline-form{:action=>"/admin/set_event", :method=>"POST"}
-            .input-append
-              %select.btn.btn-mini{:name=>"event_id"}
-                %option{:value=>nil, :selected=>@event.nil?} Select event
-                - Event.find(:all, :order=>"id DESC").each do |event|
-                  %option{:value=>event.id, :selected=>@event.nil? ? false : (event.id == @event.id)}= "#{event.name}: #{event.location}"
-              %button.btn.btn-primary{:type=>'submit'} Set event                
-
-- if defined?(@event)
-  .row-fluid
-    .span10
-      %table.table.table-hover
-        - ["Election"].each do |item|
-          %tr
-            %td= "#{item}:  "
-            %td
-              %a{:href=>"/admin/event/#{@event.id}/#{item.downcase}/edit/"} add
-            %td
-              %a{:href=>"/admin/event/#{@event.id}/#{item.downcase}/"} edit
-        - ["Presentation", "Location", "Keynote", "T-Shirt"].each do |proposal|
-          %tr
-            %td= "#{proposal} Proposal:  "        
-            %td
-              %a{:href=>"/admin/event/#{@event.id}/proposals/edit/?type=#{proposal.gsub(/[^\w]/,"")}"} add
-            -if @item_types && @item_types.include?(proposal)
-              %td
-                %a{:href=>"/admin/event/#{@event.id}/proposals/?type=#{proposal.gsub(/[^\w]/,"")}"} edit
-            -else
-              %td &nbsp;
+%h1 Diebold-o-Tron
+%a.btn.btn-primary.pull-right{:href=>"/admin/conference/new"} Add conference
+%h2 Conferences
+%ul.list-unstyled
+  - @conferences.each do |conference|
+    %li
+      %a{:href=>"/admin/conference/#{conference.id}"}
+        = conference.name

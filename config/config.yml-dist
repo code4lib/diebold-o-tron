@@ -1,11 +1,21 @@
 database:
-  adapter: mysql
-  database: confkeeper
+  adapter: sqlite3
+  database: confkeeper.sqlite3
   username: 
   password: 
 
 Drupal:
+  oauth:
+    identifier: IDENTIFIER
+    secret: SECRET
+    client:
+      site: http://code4lib.org
+      authorize_url: "/oauth2/authorize"
+      token_url: "/oauth2/token"
+    
   host: http://example.org/
   
 administrators:
     - user_account_name
+
+authentication: code4lib

@@ -92,15 +92,7 @@ td.election_results_score {
 	cursor: pointer;
 }
 
-body {
-  padding-top: 60px;
-}
-@media (max-width: 979px) {
-  body {
-    padding-top: 0px;
-  }
-}
-.even_row {
+.even_row .panel-heading {
 	background-color: #ddd;
 }
 .accordion-mini {

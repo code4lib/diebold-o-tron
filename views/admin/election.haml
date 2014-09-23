@@ -1,0 +1,9 @@
+%a.btn.btn-primary.pull-right{:href => "/admin/event/#{@event.id}/election/#{@election.id}/edit"} Edit
+%h1
+  Proposals
+  
+%a.btn.btn-primary{:href => "/admin/event/#{@event.id}/election/#{@election.id}/proposals/new"} Add proposal
+%ul
+  - @election.items.each do |prop|
+    %li
+      %a{:href=>"/admin/event/#{@params[:id]}/election/#{@election.id}/proposals/#{prop.id}/edit"}= prop.name

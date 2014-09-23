@@ -1,7 +1,8 @@
 - conference = nil
+%h1 All events
 - @events.each do |event|
 	- unless event.conference == conference
-		%h1= event.conference.name
+		%h2= event.conference.name
 		- conference = event.conference
 		%div Events:
 	%div

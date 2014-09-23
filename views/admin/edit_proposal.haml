@@ -1,26 +1,18 @@
-%form.form-horizontal{:action=>"/admin/event/#{@event.id}/proposals/edit/", :method=>"POST"}
-  .row-fluid
-    .well
-      %h3
-        - if @proposal.id 
-          %input{:type=>"hidden", :name=>"id", :value=>@proposal.id}
-          Add
-        - else 
-          Edit
-        = @proposal.type + " Proposal"
-  %input{:type=>"hidden", :name=>"type", :value=>@proposal.type}
-  .row-fluid
-    .span10
-      .control-group
+%h2= @election.name
+%form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/#{@election.id}/proposals/", :method=>"POST"}
+  - if @proposal.id
+    %input{:type=>"hidden", :name=>"id", :value=>@proposal.id}
+  .row
+    .col-md-10
+      .form-group
         %label.control-label{:for=>"#proposal_name"} Name:
         .controls
-          %input#proposal_name.span5{:type=>"text", :name=>"name", :value=>@proposal.name}
-      .control-group
+          %input#proposal_name.form-control.col-md-5{:type=>"text", :name=>"name", :value=>@proposal.name}
+      .form-group
         %label.control-label{:for=>"#proposal_description"} Description
         .controls
-          %textarea.span9{:name=>"description", :rows=>10}= @proposal.description
+          %textarea.form-control.col-md-9{:name=>"description", :rows=>10}= @proposal.description
         
-  .row-fluid
-    .well
-      %a.btn{:href=>"/admin/event/#{@event.id}"} Cancel
-      %input.btn.btn-primary{:type=>'submit', :value=>'Save'}
+  .row
+    %a.btn{:href=>"/admin/event/#{@event.id}"} Cancel
+    %input.btn.btn-primary{:type=>'submit', :value=>'Save'}

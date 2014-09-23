@@ -1,32 +1,32 @@
-%div{:class=>"row-fluid"}
-  .span10
+%div{:class=>"row"}
+  .col-md-10
     %h3 Election: #{@election.name}/#{@election.event.name}
 - if @election.open?
   = haml :"election/#{@election.class.to_s.downcase}_explanation"
 
   - conditional_ballot_form(session[:username], {:action=>"/election/#{@election.id}", :method=>"POST"}) do
-    %div{:class=>"row-fluid"}
-      .span10.well{:class=>"well-large"}
+    %div{:class=>"row"}
+      .col-md-10.well{:class=>"well-large"}
         %a{:class=>["btn", "btn-info", "pull-left", "description-shower"]} Show all descriptions
         %a{:class=>["btn", "btn-info", "pull-left", "description-hider", "hide"]} Hide all descriptions
         - if session[:username]
           %input{:type=>"submit", :class=>["btn", "btn-primary", "pull-right"], :value=>"Cast your ballot"}
-    %div{:class=>"row-fluid"}
-      .span10 
+    %div{:class=>"row"}
+      #accordion.panel-group.col-md-10
         - i = 0
         - @items.each do |item|
           - (a,b) = i.divmod(2)            
-          = haml(:"election/#{item.class.to_s.downcase}_item", :locals=>{:item=>item, :even_row=>b.even?})
+          = haml(:"election/item", :locals=>{:item=>item, :even_row=>b.even?})
           - i += 1
-    %div{:class=>"row-fluid"}
-      .span10.well{:class=>"well-large"}
+    %div{:class=>"row"}
+      .col-md-10.well{:class=>"well-large"}
         %a{:class=>["btn", "btn-info", "pull-left", "description-shower"]} Show all descriptions
         %a{:class=>["btn", "btn-info", "pull-left", "description-hider", "hide"]} Hide all descriptions    
         - if session[:username]    
           %input{:type=>"submit", :class=>["btn", "btn-primary", "pull-right"], :value=>"Cast your ballot"}
 - else
-  %div{:class=>"row-fluid"}
-    .span10
+  %div{:class=>"row"}
+    .col-md-10
       %div{:class=>["alert","alert-error"]}
         %p This election is currently closed.  Voting times are between:
         %p #{@election.start_time} and #{@election.end_time}
