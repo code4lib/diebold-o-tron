@@ -6,4 +6,4 @@
 %ul
   - @election.items.each do |prop|
     %li
-      %a{:href=>"/admin/event/#{@params[:id]}/election/#{@election.id}/proposals/#{prop.id}/edit"}= prop.name
+      %a{:href=>"/admin/event/#{@event.id}/election/#{@election.id}/proposals/#{prop.id}/edit"}= prop.name
