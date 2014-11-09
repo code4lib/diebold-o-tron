@@ -8,5 +8,6 @@
           %a{:id=>[:election_item_link, item.id], :rel=>"tooltip", :title=>"Click name for description", :'data-toggle' => 'collapse', :href => "#election_item_description_#{item.id}"}= item.name
   .panel-collapse.collapse.clearfix{:id=>[:election_item_description, item.id]}
     .col-md-12
-      :markdown
-        #{item.description}
+      .description
+        :markdown
+          #{item.description}

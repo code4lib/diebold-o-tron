@@ -127,3 +127,20 @@ td.election_results_score {
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);	
 }
+
+.description {
+  margin-top: 0.7em;
+}
+
+.description ul:first-child {
+  padding-top: 0.7em;
+  padding-bottom: 0.7em;
+  padding-left: 0;
+  list-style: none;
+  border-bottom: 1px solid #777;
+}
+
+.description ul:first-child li {
+  list-style: none;
+  padding:0;
+}

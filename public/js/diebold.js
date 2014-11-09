@@ -1,11 +1,11 @@
 $(".description-shower").click(function() {
-	$(".collapse").addClass('in');
+	$(".collapse").collapse('show');
 	$('.description-shower').addClass("hide");
 	$('.description-hider').removeClass("hide");
 });
 
 $(".description-hider").click(function() {
-  $(".collapse").removeClass('in');
+		$(".collapse").collapse('hide');
   $('.description-hider').addClass("hide");
   $('.description-shower').removeClass("hide");
 });
