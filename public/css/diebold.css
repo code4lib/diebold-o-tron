@@ -144,3 +144,15 @@ td.election_results_score {
   list-style: none;
   padding:0;
 }
+
+.rating-widget {
+  float: left;
+  padding-right: 1em;
+}
+
+.election_item .panel-title h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 30px;
+  font-size: 1em;
+}

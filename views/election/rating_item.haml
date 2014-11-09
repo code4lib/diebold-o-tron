@@ -1,4 +1,4 @@
-%div{:class=>"btn-group btn-group-sm", :"data-toggle"=>"buttons"}
+%div{:class=>"btn-group btn-group-sm rating-widget", :"data-toggle"=>"buttons"}
   - (0..3).each do |score|
     - checked = ((selected == score) ? 'checked' : nil)
     %label.btn.btn-default.btn-inverse.rating-score
