@@ -83,7 +83,7 @@ tr.election_results {
     border-right-color: #000000;
 }
 
-td.election_results_score {
+th.election_results_score, td.election_results_score {
     text-align:  center;
     font-weight: bold;
 }
