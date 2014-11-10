@@ -2,7 +2,7 @@
 - if @election.open?
   %div.row
     %div.col-md-10
-      %h3 Election: #{@election.name}/#{@election.event.name}
+      %h3 #{@election.name}
       = haml :"election/#{@election.class.to_s.downcase}_explanation"
 
   - conditional_ballot_form(session[:username], {:action=>"/election/#{@election.id}", :method=>"POST"}) do
@@ -30,7 +30,7 @@
 - else
   %div{:class=>"row"}
     .col-md-10
-      %h3 Election: #{@election.name}/#{@election.event.name}
+      %h3 #{@election.name}
       %div{:class=>["alert","alert-error"]}
         %p This election is currently closed.  Voting times are between:
         %p #{@election.start_time} and #{@election.end_time}

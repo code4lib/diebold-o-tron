@@ -1,9 +1,4 @@
-%h1= @event.name
-
-%hr
-%h3= @event.location
-
-%h4= "#{@event.start_time} - #{@event.end_time}"
+%p= "#{@event.start_time} - #{@event.end_time}" if @event.start_time?
 
 %h4 Elections
 - @event.elections.each do |elec|
