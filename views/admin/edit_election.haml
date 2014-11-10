@@ -1,5 +1,4 @@
 %form.form-horizontal{:action=>"/admin/event/#{@event.id}/election/", :method=>"POST"}
-  %input{:type=>"hidden", :name=>"type", :value=>"RatingElection"}   
   .row
     .well
       %h3
@@ -18,12 +17,12 @@
       .form-group
         %label.control-label{:for=>"#election_type"} Type:
         .controls
-          %select.form-control#election_type{:name=>"election_type"}
-            - ["Presentation", "Location", "Keynote", "T-Shirt"].each do |t|
-              - if @election.conditions =~ /type = '#{t}'/
-                %option{:selected=>true}= t
+          %select.form-control#election_type{:name=>"type"}
+            - [PresentationElection, LocationElection, KeynoteElection, TShirtElection].each do |t|
+              - if @election.is_a? t
+                %option{selected: true, value: t}= t.model_name.human
               - else
-                %option= t
+                %option{value: t}= t.model_name.human
       .form-group
         %label.control-label{:for=>"#election_start_date"} Start
         .controls

@@ -55,6 +55,10 @@ end
 
 class RatingElection < Election;end
 
+class PresentationElection < RatingElection;end
+class LocationElection < RatingElection;end
+class KeynoteElection < RatingElection;end
+class TShirtElection < RatingElection;end
 
 class Vote < ActiveRecord::Base
   belongs_to :election
