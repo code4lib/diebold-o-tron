@@ -1,22 +1,22 @@
-%row
-  .well
-    %h3 #{@election.name} results
+%h3 #{@election.name} results
 .row
   .col-md-10
-  %table.table.table-hover.table-striped.table-condensed.table-bordered
-    %tr
-      %th score
-      %th candidates
-      - @scores.sort.reverse.each do |score|
+    %table.table.table-hover.table-striped.table-condensed.table-bordered
+      %thead
         %tr
-          %td.election_results_score= score
-          %td
-            - @results[score].each do |item|
-              .accordion-mini{:id=>[:item, item.id]}
-                .accordion-mini
-                  .accordion-mini                  
-                    %a.accordion-toggle{:"data-parent"=>"item_#{item.id}", :href=>"#item_#{item.id}_description", :"data-toggle"=>"collapse"}= item.name
-                  .accordion-body.collapse{:id=>"item_#{item.id}_description"}
-                    .accordion-inner-mini
-                      :markdown 
-                        #{item.description}
+          %th score
+          %th candidates
+      %tbody
+        - @scores.sort.reverse.each do |score|
+          %tr
+            %td.election_results_score= score
+            %td
+              - @results[score].each do |item|
+                .accordion-mini{:id=>[:item, item.id]}
+                  .accordion-mini
+                    .accordion-mini                  
+                      %a.accordion-toggle{:"data-parent"=>"item_#{item.id}", :href=>"#item_#{item.id}_description", :"data-toggle"=>"collapse"}= item.name
+                    .accordion-body.collapse{:id=>"item_#{item.id}_description"}
+                      .accordion-inner-mini
+                        :markdown 
+                          #{item.description}
