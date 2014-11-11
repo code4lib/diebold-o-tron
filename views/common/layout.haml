@@ -14,8 +14,18 @@
       %div{:class=>"container"}
         %div{:class => 'navbar-header'}
           %a{:class=>"navbar-brand", :href=>"/"} Code4Lib Diebold-o-Tron
-      
-              
+
+        %ul.nav.navbar-nav
+          %li
+            %a{:href=>"/conferences/events/"} Events 
+          %li
+            %a{:href=>"/election/"} Elections
+
+          - if session[:username]
+            - if CONFIG["administrators"] && CONFIG["administrators"].include?(session[:username])
+              %li
+                %a{:href=>"/admin/"} Admin
+        
         %ul{:class=>"nav navbar-nav navbar-right"}
           -if session[:username]                        
             %li.dropdown
@@ -31,10 +41,11 @@
               %a{:href=>"/login/", class: '', :role=>"button"} Sign in
     %div{:class=>"container"}
       %div{:class=>"row"}
-        .col-md-2.col-sm-3
-          %div{:class=>["well","sidebar-nav"]}
-            = haml :"/common/left_nav"
-        .col-md-10.col-sm-9
+        .col-md-3.col-sm-3
+          - unless @event.nil?
+            %div{:class=>["well","sidebar-nav"]}
+              = haml :"/common/event_nav"
+        .col-md-9.col-sm-9
           - if @event
             %div{:class=>"row"}
               .col-md-12

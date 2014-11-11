@@ -1,0 +1,11 @@
+- unless @event.nil?
+  %ul{:class=>["nav nav-pills"]}
+    %li
+      %a{:href=>"/conferences/events/#{@event.id}"}= @event.name
+      %ul
+        - @event.elections.each do |elec|
+          %li
+            = elec.name
+            - if elec.open?		
+              %a{:href=>"/election/#{elec.id}"} vote
+            %a{:href=>"/election/results/#{elec.id}"} results
