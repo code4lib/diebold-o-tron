@@ -3,8 +3,8 @@
     .panel-title
       - if @election.open? && session[:username]
         = display_election_item(item, @user, @election)
-        %h4.col-sm-8.col-md-8
-          %a{:id=>[:election_item_link, item.id], :rel=>"tooltip", :title=>"Click name for description", :'data-toggle' => 'collapse', :href => "#election_item_description_#{item.id}"}= item.name
+      %h4.col-sm-8.col-md-8
+        %a{:id=>[:election_item_link, item.id], :rel=>"tooltip", :title=>"Click name for description", :'data-toggle' => 'collapse', :href => "#election_item_description_#{item.id}"}= item.name
   .panel-collapse.collapse.clearfix{:id=>[:election_item_description, item.id]}
     .col-md-12
       .description
