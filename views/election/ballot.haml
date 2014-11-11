@@ -13,6 +13,8 @@
           %a{:class=>["btn", "btn-info", "pull-left", "description-hider", "hide"]} Hide all descriptions
           - if session[:username]
             %input{:type=>"submit", :class=>["btn", "btn-primary", "pull-right"], :value=>"Cast your ballot"}
+          - else
+            %a.btn.btn-primary.pull-right{href: "/login/"} Sign to in cast your ballot
     %div{:class=>"row"}
       #accordion.panel-group.col-md-10
         - i = 0
