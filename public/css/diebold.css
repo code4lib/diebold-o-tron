@@ -156,3 +156,8 @@ th.election_results_score, td.election_results_score {
   line-height: 30px;
   font-size: 1em;
 }
+
+.panel-title h4:first-child {
+  padding-left: 0;
+  margin-left: 0;
+}
