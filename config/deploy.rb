@@ -1,6 +1,3 @@
-# config valid only for Capistrano 3.1
-lock '3.2.1'
-
 set :application, 'diebold-o-tron'
 set :repo_url, 'https://github.com/code4lib/diebold-o-tron.git'
 

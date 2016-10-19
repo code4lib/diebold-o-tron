@@ -3,7 +3,7 @@ gem 'rake'
 gem 'sinatra'
 gem 'thin'
 gem 'haml'
-gem 'activerecord', '4.1.6'
+gem 'activerecord', '4.2.7.1'
 gem 'rack-conneg'
 gem 'rdiscount'
 gem 'json'
@@ -30,3 +30,4 @@ end
 
 gem 'omniauth'
 gem 'omniauth-oauth2'
+gem 'eventmachine', '< 1.2'
