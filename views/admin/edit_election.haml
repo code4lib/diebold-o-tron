@@ -18,7 +18,7 @@
         %label.control-label{:for=>"#election_type"} Type:
         .controls
           %select.form-control#election_type{:name=>"type"}
-            - [PresentationElection, LocationElection, KeynoteElection, TShirtElection].each do |t|
+            - [PresentationElection, PanelElection, LocationElection, KeynoteElection, TShirtElection].each do |t|
               - if @election.is_a? t
                 %option{selected: true, value: t}= t.model_name.human
               - else
